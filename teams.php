@@ -1,0 +1,3 @@
+<?php
+Header("Location:./teams");
+?>
