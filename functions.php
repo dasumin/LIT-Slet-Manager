@@ -573,7 +573,7 @@ function addParticipant ( $participant ) {
 
 function editParticipant ( $participant ) {
 	global $account;
-	
+  	
 	$arg = func_get_args();
 	
 	/*
@@ -602,7 +602,9 @@ function editParticipant ( $participant ) {
 	$q = mysql_query ("SELECT * FROM `participants` WHERE `id` = '".$participant['id']."'");
 	$old = mysql_fetch_array($q);
 	
-	if ( mysql_num_rows ( mysql_query ("SELECT * FROM `teams` WHERE (`leader` = '".$participant['id']."' OR `graduate` = '".$participant['id']."' OR `teacher` = '".$participant['id']."') AND `id` != '".@$participant['team']."'") ) > 0 ) {
+	if ( mysql_num_rows ( mysql_query ("
+  SELECT * FROM `teams` WHERE (`leader` = '".$participant['id']."' OR `graduate` = '".$participant['id']."' OR `teacher` = '".$participant['id']."') AND `id` != '".@$participant['team']."'
+  ") ) > 0 ) {
 		report_error ("Руководителей звена нельзя переместить в другое звено");
 		return FALSE;
 	}
