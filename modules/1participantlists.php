@@ -5,11 +5,11 @@ $module = 'participantlists';
 
 if ( !defined("RequestModule") || ( RequestModule !== 'core' && RequestModule !== 'participantlist' ) ) die;
 
-$modules[$module]['name'] = 'Списки участников слёта';
+$modules[$module]['name'] = 'Списки';
 
 $modules[$module]['action'][] = 'show_participant_list';
-$modules[$module]['menu'][] = 'Списки участников';
-$modules[$module]['title'][] = 'Участники слета';
+$modules[$module]['menu'][] = 'Список всех лицеистов';
+$modules[$module]['title'][] = 'Лицеисты, преподаватели, выпускники';
 
 $modules[$module]['action'][] = 'participant_info';
 #$modules[$module]['menu'][] = 'Информация об участнике';
