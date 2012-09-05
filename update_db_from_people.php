@@ -46,13 +46,29 @@ foreach ($tables as $value) {
 				SELECT * FROM `participants`
 				WHERE `name` = '".$participant['name']."' AND
 				`surname` = '".$participant['surname']."' AND
-				`litgroup` = '".$participant['litgroup']."';");
+				`litgroup` = '".$participant['litgroup']."';
+                        ");
 				
 			if ( mysql_num_rows ($q) == 0 ) {
 				addParticipant($participant);
 				echo 'Добавили: '.$participant['name'].' '.$participant['surname'].' ('.$participant['litgroup'].')<br>';
 			}
-			
+                        
+                        $q_full = mysql_query ("
+				SELECT * FROM `participants`
+				WHERE `name` = '".$participant['name']."' AND
+				`surname` = '".$participant['surname']."' AND
+				`litgroup` = '".$participant['litgroup']."' AND
+                                `sex` = '".$participant['sex']."' AND
+                                `photo_url` = '".$participant['photo_url']."';
+                        ");
+                        
+                        if ( mysql_num_rows ($q) == 1 && mysql_num_rows ($q_full) == 0 ) {
+                                $f = mysql_fetch_array($q_full);
+                                $participant['id'] = $f['id'];
+                                editParticipant( $participant );
+				echo 'Обновили: '.$participant['name'].' '.$participant['surname'].' ('.$participant['litgroup'].')<br>';
+                        }
 			
 		}
 	}
