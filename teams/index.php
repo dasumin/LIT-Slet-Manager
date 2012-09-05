@@ -11,7 +11,7 @@ if (!mysql_select_db($mysql_db))
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 	<head>
-		<title>Слет&ndash;2011: списки звеньев</title>
+		<title>Слет&ndash;2012: списки звеньев</title>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 		<style type="text/css">
 			body {
@@ -40,7 +40,7 @@ if (!mysql_select_db($mysql_db))
 		</style>
 	</head>
 	<body>
-		<h1>Слет&ndash;2011: списки звеньев</h1>
+		<h1>Слет&ndash;2012: списки звеньев</h1>
 <?php
 $teams = formTeamsArray();
 foreach ($teams as $key=>$value) {
