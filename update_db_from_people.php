@@ -65,9 +65,11 @@ foreach ($tables as $value) {
                         
                         if ( mysql_num_rows ($q) == 1 && mysql_num_rows ($q_full) == 0 ) {
                                 $f = mysql_fetch_array($q_full);
-                                $participant['id'] = $f['id'];
-                                editParticipant( $participant );
-				echo 'Обновили: '.$participant['name'].' '.$participant['surname'].' ('.$participant['litgroup'].')<br>';
+                                $participant_new = $f['id'];
+                                $participant_new['sex'] = $participant['sex'];
+                                $participant_new['photo_url'] = $participant['photo_url'];
+                                editParticipant( $participant_new );
+				echo 'Обновили: '.$participant_new['name'].' '.$participant_new['surname'].' ('.$participant_new['litgroup'].')<br>';
                         }
 			
 		}
