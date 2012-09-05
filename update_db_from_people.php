@@ -25,7 +25,7 @@ foreach ($tables as $value) {
 	if ( $xml = simplexml_load_string($response) ) {
 		for ($i=0; $i<$xml->count(); $i++) {
 			$participant = (array) $xml->person[$i];
-
+      
 			switch ($value) {
 				case 'staff':
 					$participant['litgroup'] = 'Преподаватель';
@@ -55,24 +55,29 @@ foreach ($tables as $value) {
 				echo 'Добавили: '.$participant['name'].' '.$participant['surname'].' ('.$participant['litgroup'].')<br>';
 			}
 
-                        foreach ( array('sex','photo_url') as $field ) {
+      foreach ( array('sex','photo_url') as $field ) {
 
-                                $q_full = mysql_query ("
-                                        SELECT * FROM `participants`
-                                        WHERE `name` = '".$participant['name']."' AND
-                                        `surname` = '".$participant['surname']."' AND
-                                        `litgroup` = '".$participant['litgroup']."' AND
-                                        `$field` = '".$participant[$field]."';
-                                ");
+        $q_full = mysql_query ("
+                SELECT * FROM `participants`
+                WHERE `name` = '".$participant['name']."' AND
+                `surname` = '".$participant['surname']."' AND
+                `litgroup` = '".$participant['litgroup']."' AND
+                `$field` = '".$participant[$field]."';
+        ");
 
-                                if ( mysql_num_rows ($q) == 1 && mysql_num_rows ($q_full) == 0 ) {
-                                        $f = mysql_fetch_array($q);
-                                        $participant_new = $f;
-                                        $participant_new[$field] = $participant[$field];
-                                        editParticipant( $participant_new );
-                                        echo 'Обновили: '.$participant_new['name'].' '.$participant_new['surname'].' ('.$participant_new['litgroup'].') '.$field.'<br>';
-                                }
-                        }
+        if ( mysql_num_rows ($q) == 1 && mysql_num_rows ($q_full) == 0 ) {
+                $f = mysql_fetch_array($q);                
+                if ($f) {
+                  $participant_new = $f;
+                  if ( $f[$field] != '' && $participant[$field] == '' ) continue;
+                  else $participant_new[$field] = $participant[$field];
+                  editParticipant( $participant_new );
+                  echo 'Обновили: '.$participant_new['name'].' '.$participant_new['surname'].' ('.$participant_new['litgroup'].') '.$field.'<br>';
+                }
+                
+                
+        }
+      }
 		}
 	}
 }
