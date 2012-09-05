@@ -48,7 +48,7 @@ function show_admin ($action) {
 			<p>
 			<table class="userinfo">
 				<tr>
-					<td>id участника</td> 
+					<td>id лицеиста</td> 
 					<td><input type="text" name="id" id="id" value="" /></td>
 				</tr>	
 				<tr>
@@ -65,9 +65,9 @@ function show_admin ($action) {
 				
 				foreach ( getGroupsList() as $sysname=>$name) {
 					$atr = '';
-					foreach ( $editUser['group'] as $value ) {
+					/*foreach ( $editUser['group'] as $value ) {
 						if ($value == $sysname) $atr = 'selected';
-					}
+					}*/
 					echo '<option value="'.$sysname.'" '.$atr.'>'.$name.'</option>';
 				}
 									
