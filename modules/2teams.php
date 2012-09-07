@@ -189,14 +189,14 @@ function show_teams ($action) {
           @$sum[$key1]+=$value[$key1];
         }        
       }
-      $num_students_average = ceil($sum['num_students']/count($teams));
+      $num_students_average = ceil($sum['num_students']/ (count($teams)-1) );
       
       foreach ($teams as $key=>$value) {
         if ( $value['id'] != 0 ) {
           $correction = '';
           if ( abs( $diff = ($num_students_average - $value['num_students']) ) > 0 ) {
-            if ( $diff > 0 ) $diff = '&minus;'.abs($diff);
-            else $diff = '+'.abs($diff);
+            if ( $diff > 0 ) $diff = '+'.abs($diff);
+            else $diff = '&minus;'.abs($diff);
             $correction = ' <span style="color: red">'.$diff.'</span>';
           }
           echo '
