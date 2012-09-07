@@ -237,7 +237,7 @@ function show_teams ($action) {
       ';
       echo '
       </table>
-      <p>Среднее количество человек в звене: '.$num_students_average.'</p>
+      <p>Среднее количество лицеистов в звене: '.$num_students_average.'</p>
       ';
       
       break;
