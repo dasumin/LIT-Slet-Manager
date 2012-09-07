@@ -195,8 +195,8 @@ function show_teams ($action) {
         if ( $value['id'] != 0 ) {
           $correction = '';
           if ( abs( $diff = ($num_students_average - $value['num_students']) ) > 0 ) {
-            if ( $diff > 0 ) $diff = '+'.$diff;
-            else $diff = '&minus;'.abs($diff);
+            if ( $diff > 0 ) $diff = '&minus;'.abs($diff);
+            else $diff = '+'.abs($diff);
             $correction = ' <span style="color: red">'.$diff.'</span>';
           }
           echo '
