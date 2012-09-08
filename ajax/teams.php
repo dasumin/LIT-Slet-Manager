@@ -31,6 +31,7 @@ if (empty($_GET['action'])) $action = 'show_team';
 if ($userIsAdmin || $userIsLeader) {
 	if ( !$userIsAdmin && $_GET['team'] != $user['team'] ) report_error ("Вы можете редактировать список только своего звена");
 	else {
+    if ( !$userIsAdmin ) report_error ("Списки закрыты. Вас же просили не редактировать списки звеньев ;-)");
 		if ( isset ($_GET['add'] ) || isset ($_GET['add_confirmed'] )) {
 			if ( isset ($_GET['add'] ) ) $participant = get_participant_info ( $_GET['add'] );
 				else $participant = get_participant_info ( $_GET['add_confirmed'] );
