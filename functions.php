@@ -77,7 +77,7 @@ function report_error($problem) {
 	$problemtolog = trim(strip_tags ($problemtolog[0]));	
 	mysql_query ("START TRANSACTION;");
 	mysql_query ("
-	INSERT INTO `logs_errors` (`id` , `error` , `ip`)
+	INSERT INTO `logs_errors` (`userid` , `error` , `ip`)
 	VALUES ('$id', '$problemtolog', '$_SERVER[REMOTE_ADDR]');");
 	mysql_query ("COMMIT;");
 	
