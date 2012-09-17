@@ -677,6 +677,8 @@ function getInfoFromPeople ( $name, $surname, $litgroup, $field ) {
 			$table = 'graduate';
 			$url = $url.'table='.$table;
 			break;
+    case 'Внешний человек':
+      break;
 		case '':
 			return;
 			break;
