@@ -225,8 +225,8 @@ function formTeamsArray () {
 		$array[$f['id']]['num_9'] = mysql_num_rows( mysql_query ( "SELECT * FROM `participants` WHERE `team`='$f[id]' AND `litgroup` LIKE '9%';" ) );
 		$array[$f['id']]['num_10'] = mysql_num_rows( mysql_query ( "SELECT * FROM `participants` WHERE `team`='$f[id]' AND `litgroup` LIKE '10%';" ) );
 		$array[$f['id']]['num_11'] = mysql_num_rows( mysql_query ( "SELECT * FROM `participants` WHERE `team`='$f[id]' AND `litgroup` LIKE '11%';" ) );
-		$array[$f['id']]['num_m'] = mysql_num_rows( mysql_query ( "SELECT * FROM `participants` WHERE `team`='$f[id]' AND `litgroup` != 'Преподаватель' AND `litgroup` != 'Выпускник' AND `sex`='m';" ) );
-		$array[$f['id']]['num_f'] = mysql_num_rows( mysql_query ( "SELECT * FROM `participants` WHERE `team`='$f[id]' AND `litgroup` != 'Преподаватель' AND `litgroup` != 'Выпускник' AND `sex`='f';" ) );
+		$array[$f['id']]['num_m'] = mysql_num_rows( mysql_query ( "SELECT * FROM `participants` WHERE `team`='$f[id]' AND `litgroup` != 'Преподаватель' AND `litgroup` != 'Выпускник' AND `litgroup` != 'Внешний человек' AND `sex`='m';" ) );
+		$array[$f['id']]['num_f'] = mysql_num_rows( mysql_query ( "SELECT * FROM `participants` WHERE `team`='$f[id]' AND `litgroup` != 'Преподаватель' AND `litgroup` != 'Выпускник' AND `litgroup` != 'Внешний человек' AND `sex`='f';" ) );
 	}
 	return $array;
 }
