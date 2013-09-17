@@ -201,7 +201,7 @@ function print_participant_info ($id) {
 
 function formTeamsArray () {
 	$array = array();
-	$q = mysql_query ("SELECT * FROM `teams`");
+	$q = mysql_query ("SELECT * FROM `teams` ORDER BY  `id` ASC");
 	
 	$array[0]['id'] = 0;
 	$array[0]['leader'] = 'нет';
@@ -215,7 +215,7 @@ function formTeamsArray () {
 		foreach ($fields as $key=>$value) {
 			if ( $f[$value] != 0) {
 				$info = get_participant_info ($f[$value]);
-				$array[$f['id']][$value] = $info['name'].' '.$info['surname'];
+				$array[$f['id']][$value] = $info['surname'].' '.$info['name'];
 			}
 		}
 		$array[$f['id']]['num_people'] = mysql_num_rows( mysql_query ( "SELECT * FROM `participants` WHERE `team`='$f[id]';" ) );
@@ -234,17 +234,20 @@ function formTeamsArray () {
 function formTeamArray ( $id ) {
 	$array = array();
 	
-	$q = mysql_query ("SELECT * FROM `teams` WHERE `id`='$id'");
+	$q = mysql_query ( "SELECT * FROM `teams` WHERE `id`='$id'" );
 	$f = mysql_fetch_array($q);
 	
 	$array[0] = $f['leader'];
 	$array[1] = $f['graduate'];
 	$array[2] = $f['teacher'];
 	
-	$q = mysql_query("SELECT * FROM `participants` WHERE `team`='$id' AND `id`!='$array[0]' AND `id`!='$array[1]' AND `id`!='$array[2]' ORDER BY  `litgroup` ASC, `surname` ASC;");
+	$q = mysql_query( "SELECT * , CONVERT( SUBSTRING_INDEX(  `litgroup` ,  '.', 1 ) , UNSIGNED ) AS  `grade` , SUBSTRING_INDEX( SUBSTRING_INDEX(  `litgroup` ,  '.', 2 ) ,  '.' , -1 ) AS  `group`
+		FROM `participants`
+		WHERE `team`='$id' AND `id`!='$array[0]' AND `id`!='$array[1]' AND `id`!='$array[2]'
+		ORDER BY  `grade` DESC ,  `group` ASC ,  `surname` ASC;" );
 	
-	for ($i=0; $i<mysql_num_rows($q); $i++) {
-		$f = mysql_fetch_array($q);
+	for ( $i=0; $i < mysql_num_rows( $q ); $i++ ) {
+		$f = mysql_fetch_array( $q );
 		$array[$i+3] = $f['id'];
 	}
 	
