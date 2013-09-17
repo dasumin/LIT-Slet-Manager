@@ -69,6 +69,8 @@ function show_auth ($action) {
 					<tr><td></td><td><input type="submit" name="'.$module['action'][0].'" value="Войти в систему" /></td></tr>
 				</table>
 				</form>
+				<p style="margin-top: 40px;">База пользователей Слётоуправлятора, к сожалению, пока никак не связана с лицейскими логинами; логины прошлого года так же не работают.</p>
+				<p>Чтобы получить логин и пароль, обратитесь к Дмитрию Николаевичу Алхазашвили или Денису Сумину (<a href="mailto:slet@dsumin.ru">slet@dsumin.ru</a>)</p>
 			';
 			break;
 		case $module['action'][1]:

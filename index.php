@@ -7,7 +7,7 @@ function print_header() {
 	<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 	<html>
 		<head>
-			<title>Слет&mdash;2012</title>
+			<title>Слет&mdash;2013</title>
 			<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 			<link type="text/css" rel="stylesheet" media="all" href="style/style.css">
 			<link type="text/css" rel="stylesheet" media="print" href="style/print.css">
@@ -30,7 +30,7 @@ function print_header() {
 		<body>
 		
 		<div id="header">&nbsp;</div>
-		<div id="indexlink"><a href="'.$_SERVER["PHP_SELF"].'">Слет&mdash;2012</a></div>';	
+		<div id="indexlink"><a href="'.$_SERVER["PHP_SELF"].'">Слет&mdash;2013</a></div>';	
 	return TRUE;
 }
 
