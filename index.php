@@ -2,12 +2,12 @@
 session_name("SletManager");
 session_start();
 
-function print_header() {
+function print_header( $year ) {
 	echo '
 	<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 	<html>
 		<head>
-			<title>Слет&mdash;2013</title>
+			<title>Слет&mdash;'.$year.'</title>
 			<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 			<link type="text/css" rel="stylesheet" media="all" href="style/style.css">
 			<link type="text/css" rel="stylesheet" media="print" href="style/print.css">
@@ -30,7 +30,7 @@ function print_header() {
 		<body>
 		
 		<div id="header">&nbsp;</div>
-		<div id="indexlink"><a href="'.$_SERVER["PHP_SELF"].'">Слет&mdash;2013</a></div>';	
+		<div id="indexlink"><a href="'.$_SERVER["PHP_SELF"].'">Слет&mdash;'.$year.'</a></div>';	
 	return TRUE;
 }
 
@@ -128,7 +128,7 @@ include ("./functions.php");
 
 $participantlist = FALSE;
 
-print_header();
+print_header( $year );
 
 if (!mysql_connect($mysql_server,$mysql_user,$mysql_password)) 
 	report_error ('Не удалось подключиться к серверу баз данных.');
