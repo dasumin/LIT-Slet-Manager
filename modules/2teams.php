@@ -168,10 +168,11 @@ function show_teams ($action) {
           <th rowspan="2">Выпускник</th>
           <th rowspan="2" style="border-right-color: #444;">Преподаватель</th>
           <th rowspan="2" style="border-right-color: #444; font-size: 70%;">Кол-во<br />человек</th>
-          <th colspan="8" style="font-size: 70%; text-align:center">лицеисты</th>
+          <th colspan="9" style="font-size: 70%; text-align:center">лицеисты</th>
           
         </tr>
         <tr>
+          <th style="text-align: center;">5</th>
           <th style="text-align: center;">7</th>
           <th style="text-align: center;">8</th>
           <th style="text-align: center;">9</th>
@@ -183,7 +184,7 @@ function show_teams ($action) {
         </tr>
       ';
       
-      $sum = array('num_people'=>0,'num_7'=>0,'num_8'=>0,'num_9'=>0,'num_10'=>0,'num_11'=>0,'num_students'=>0,'num_m'=>0,'num_f'=>0);      
+      $sum = array('num_people'=>0,'num_5'=>0,'num_7'=>0,'num_8'=>0,'num_9'=>0,'num_10'=>0,'num_11'=>0,'num_students'=>0,'num_m'=>0,'num_f'=>0);      
       foreach ($teams as $key=>$value) {
         foreach ($sum as $key1=>$value1) {
           @$sum[$key1]+=$value[$key1];
@@ -207,6 +208,7 @@ function show_teams ($action) {
           <td>'.@$value['graduate'].'</td>
           <td style="border-right-color: #444;">'.@$value['teacher'].'</td>
           <td style="border-right-color: #444; text-align: center;">'.$value['num_people'].'</td>
+          <td style="text-align: center;">'.$value['num_5'].'</td>
           <td style="text-align: center;">'.$value['num_7'].'</td>
           <td style="text-align: center;">'.$value['num_8'].'</td>
           <td style="text-align: center;">'.$value['num_9'].'</td>
@@ -226,6 +228,7 @@ function show_teams ($action) {
           <td></td>
           <td style="border-right-color: #444;"></td>
           <td style="border-right-color: #444; text-align: center;">'.$sum['num_people'].'</td>
+          <td style="text-align: center;">'.$sum['num_5'].'</td>
           <td style="text-align: center;">'.$sum['num_7'].'</td>
           <td style="text-align: center;">'.$sum['num_8'].'</td>
           <td style="text-align: center;">'.$sum['num_9'].'</td>
@@ -313,10 +316,26 @@ function show_teams ($action) {
         <h3 style="margin-bottom: 5px;">Информация о звене:</h3>
         <table style="float: left; font-size: 80%; margin-bottom: 20px; margin-right: 20px; text-align: center;">
           <tr>
-            <th>Лицеистов</th><th>7</th><th>8</th><th>9</th><th>10</th><th>11</th><th>М</th><th>Ж</th>
+            <th>Лицеистов</th>
+            <th>5</th>
+            <th>7</th>
+            <th>8</th>
+            <th>9</th>
+            <th>10</th>
+            <th>11</th>
+            <th>М</th>
+            <th>Ж</th>
           </tr>
           <tr>
-            <td>'.$teams[$team]['num_students'].'</td><td>'.$teams[$team]['num_7'].'</td><td>'.$teams[$team]['num_8'].'</td><td>'.$teams[$team]['num_9'].'</td><td>'.$teams[$team]['num_10'].'</td><td>'.$teams[$team]['num_11'].'</td><td>'.$teams[$team]['num_m'].'</td><td>'.$teams[$team]['num_f'].'</td>
+            <td>'.$teams[$team]['num_students'].'</td>
+            <td>'.$teams[$team]['num_5'].'</td>
+            <td>'.$teams[$team]['num_7'].'</td>
+            <td>'.$teams[$team]['num_8'].'</td>
+            <td>'.$teams[$team]['num_9'].'</td>
+            <td>'.$teams[$team]['num_10'].'</td>
+            <td>'.$teams[$team]['num_11'].'</td>
+            <td>'.$teams[$team]['num_m'].'</td>
+            <td>'.$teams[$team]['num_f'].'</td>
           </tr>
         </table>
         <p style="clear: both"><a href="?action=edit_team&team='.$team.'"><i>Редактировать</a> &laquo;тройку&raquo;</i></p>

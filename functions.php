@@ -220,6 +220,7 @@ function formTeamsArray () {
 		}
 		$array[$f['id']]['num_people'] = mysql_num_rows( mysql_query ( "SELECT * FROM `participants` WHERE `team`='$f[id]';" ) );
 		$array[$f['id']]['num_students'] = mysql_num_rows( mysql_query ( "SELECT * FROM `participants` WHERE `team`='$f[id]' AND `litgroup` != 'Преподаватель' AND `litgroup` != 'Выпускник' AND `litgroup` != 'Внешний человек';" ) );
+		$array[$f['id']]['num_5'] = mysql_num_rows( mysql_query ( "SELECT * FROM `participants` WHERE `team`='$f[id]' AND `litgroup` LIKE '5%';" ) );
 		$array[$f['id']]['num_7'] = mysql_num_rows( mysql_query ( "SELECT * FROM `participants` WHERE `team`='$f[id]' AND `litgroup` LIKE '7%';" ) );
 		$array[$f['id']]['num_8'] = mysql_num_rows( mysql_query ( "SELECT * FROM `participants` WHERE `team`='$f[id]' AND `litgroup` LIKE '8%';" ) );
 		$array[$f['id']]['num_9'] = mysql_num_rows( mysql_query ( "SELECT * FROM `participants` WHERE `team`='$f[id]' AND `litgroup` LIKE '9%';" ) );
