@@ -11,7 +11,7 @@ if (!mysql_select_db($mysql_db))
 $tables = array ('students', 'staff', 'graduate');
 
 foreach ($tables as $value) {
-	$url = "http://people.lit.msu.ru/people.php?table=".$value;
+	$url = "https://people.lit.msu.ru/people.php?table=".$value;
 
 	$ch = curl_init();
 	curl_setopt ($ch, CURLOPT_URL, $url);

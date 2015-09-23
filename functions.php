@@ -706,7 +706,7 @@ function updateUsersGroup ( $userid, $group ) {
 
 
 function getInfoFromPeople ( $name, $surname, $litgroup, $field ) {
-	$url = "http://people.lit.msu.ru/people.php?";
+	$url = "https://people.lit.msu.ru/people.php?";
 	switch ($litgroup) {
 		case 'Преподаватель':
 			$table = 'staff';
