@@ -2,7 +2,7 @@
 $mysql_server = "localhost";
 $mysql_db = "lit1533_slet";
 $mysql_user = "lit1533_slet";
-$mysql_password = "PJVHxUD2ED3fWRmy";
+$mysql_password = "PASSWORD";
 
 $litgroupSet = array (
     '5.1','5.2','5.3','5.4',
