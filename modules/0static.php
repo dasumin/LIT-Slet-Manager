@@ -45,7 +45,7 @@ function show_static ($action) {
 	global $user;
 	echo '
 	<div style="font-size: 86%;">
-	';	
+	';
 	switch ($action) {
 		case 'slet_rules':
 			echo '
@@ -128,10 +128,10 @@ function show_static ($action) {
 <li>(лицеистам) Все вопросы, ответы на&nbsp;которые вы&nbsp;не&nbsp;находите в&nbsp;данном положении, следует задать звеньевому и/или преподавателю. В&nbsp;случае категорического несогласия звеньевого с&nbsp;преподавателем стоит рассмотреть ситуацию с&nbsp;руководителем слета.</li>
 </ul>
 			';
-		
+
 			break;
-			
-		case 'leader_duties':	
+
+		case 'leader_duties':
 			echo '
 <h2>Звеньевой:</h2>
 <ol>
@@ -151,9 +151,9 @@ function show_static ($action) {
 <li>Сдает взятое из&nbsp;турподвала снаряжение исправным и&nbsp;пригодным к&nbsp;дальнейшему использованию.</li>
 </ol>
 			';
-			
+
 			break;
-			
+
 		case 'teacher_duties':
 			echo '
 <h2>Учитель:</h2>
@@ -177,9 +177,9 @@ function show_static ($action) {
 <li>Контролирует готовность звена к&nbsp;посадке в&nbsp;автобус.</li>
 </ol>
 			';
-		
+
 			break;
-			
+
 		case 'teams':
 			echo '
 <p>Актуальные списки звеньев доступны по&nbsp;адресу: <a href="http://slet.lit1533.ru/teams/">http://slet.lit1533.ru/teams/</a></p>
@@ -190,11 +190,11 @@ function show_static ($action) {
 В&nbsp;свою очередь, лицеист, желающий поехать на&nbsp;слет, должен проследить, что он&nbsp;есть в&nbsp;списках.</p>
 <p><a href="http://304.ru/index.php?showtopic=13042&amp;hl=">Обсуждение</a> списков и системы на форуме 304.ru</p>
 			';
-		
+
 			break;
-		
+
 		case 'individ_equip':
-			echo '		
+			echo '
 <ol>
 <li>Рюкзак</li>
 <li>Коврик</li>
@@ -216,9 +216,9 @@ function show_static ($action) {
 </ol>
 			';
 			break;
-		
+
 		case 'team_equip':
-			echo '	
+			echo '
 <h3>Каждое звено должно иметь:</h3>
 <ol>
 <li>Палатки (из&nbsp;расчета <nobr>2-местная &mdash;</nobr> на&nbsp;троих, <nobr>3-местная &mdash;</nobr> на&nbsp;четверых-пятерых).</li>
@@ -237,10 +237,10 @@ function show_static ($action) {
 </ol>
 			';
 			break;
-			
-		
+
+
 		case 'todolist':
-			echo '	
+			echo '
 <h2>Список дел на&nbsp;поляне слета</h2>
 <h3>Постановка лагеря</h3>
 <ol>
@@ -262,14 +262,14 @@ function show_static ($action) {
 </ol>
 			';
 			break;
-			
+
 		case 'cooking':
-			echo '	
+			echo '
 Некоторые походные рецепты доступны на сайте 304.ru: <a href="http://drupal.304.ru/node/252">http://drupal.304.ru/node/252</a><br />
 Также Дмитрий Николаевич с радостью делится секретами походной кухни, его можно найти в Лицее в 304й ;-)
 			';
 			break;
-						
+
 	}
 	echo '</div>';
 }

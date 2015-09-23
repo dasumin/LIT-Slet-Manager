@@ -23,9 +23,9 @@ foreach ($tables as $value) {
 	}
 
 	if ( $xml = simplexml_load_string($response) ) {
-		for ($i=0; $i<$xml->count(); $i++) {
+		for ($i=0; $i < $xml->count(); $i++) {
 			$participant = (array) $xml->person[$i];
-      
+
 			switch ($value) {
 				case 'staff':
 					$participant['litgroup'] = 'Преподаватель';
@@ -66,7 +66,7 @@ foreach ($tables as $value) {
         ");
 
         if ( mysql_num_rows ($q) == 1 && mysql_num_rows ($q_full) == 0 ) {
-                $f = mysql_fetch_array($q);                
+                $f = mysql_fetch_array($q);
                 if ($f) {
                   $participant_new = $f;
                   if ( $f[$field] != '' && $participant[$field] == '' ) continue;
@@ -74,8 +74,8 @@ foreach ($tables as $value) {
                   editParticipant( $participant_new );
                   echo 'Обновили: '.$participant_new['name'].' '.$participant_new['surname'].' ('.$participant_new['litgroup'].') '.$field.'<br>';
                 }
-                
-                
+
+
         }
       }
 		}

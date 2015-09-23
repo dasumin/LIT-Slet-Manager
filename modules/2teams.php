@@ -35,18 +35,18 @@ $modules[$module]['groups'][] = 'admin';
 $modules[$module]['groups'][] = 'leader';
 
 function show_teams ($action) {
-  global $modules, $user, $participantlist, $litgroupSet;  
+  global $modules, $user, $participantlist, $litgroupSet;
   $module = $modules['teams'];
-  
+
   $userIsAdmin = FALSE;
   foreach (@$user['group'] as $key=>$value) {
     if ($value=='admin') $userIsAdmin = TRUE;
   }
-  
+
   switch ($action) {
 // Добавить звено
     case 'add_team':
-      
+
       if ( isset ($_POST[$action]) ) {
         if ($userIsAdmin) {
           $newTeam = saveTeam ( 0, $_POST['leader'], $_POST['graduate'], $_POST['teacher'] );
@@ -59,7 +59,7 @@ function show_teams ($action) {
         }
         else report_error ("У вас недостаточно прав для добавления звена");
       }
-      
+
       else {
         echo '
         <div>
@@ -67,10 +67,10 @@ function show_teams ($action) {
         <p>
         <table class="userinfo">
           <tr>
-            <td>Звеньевой</td> 
+            <td>Звеньевой</td>
             <td><select name="leader" size="1">
         ';
-      
+
         foreach ( $litgroupSet as $key=>$value ) {
           if ( $value == 'Выпускник' || $value == 'Преподаватель') {}
           else {
@@ -83,15 +83,15 @@ function show_teams ($action) {
             echo '</optgroup>';
           }
         }
-          
+
         echo '
             </select></td>
-          </tr>  
+          </tr>
           <tr>
-            <td>Выпускник</td> 
+            <td>Выпускник</td>
             <td><select name="graduate" size="1"><option value="">нет</option>
         ';
-      
+
         foreach ( $litgroupSet as $key=>$value ) {
           if ( $value !== 'Выпускник' && $value !== 'Преподаватель') {}
           else {
@@ -104,14 +104,14 @@ function show_teams ($action) {
             echo '</optgroup>';
           }
         }
-          
+
         echo '
             </select></td>
           </tr>
-          <tr><td>Преподаватель</td> 
+          <tr><td>Преподаватель</td>
             <td><select name="teacher" size="1"><option value="">нет</option>
         ';
-      
+
         foreach ( $litgroupSet as $key=>$value ) {
           if ( $value !== 'Выпускник' && $value !== 'Преподаватель') {}
           else {
@@ -124,24 +124,24 @@ function show_teams ($action) {
             echo '</optgroup>';
           }
         }
-          
+
         echo '
             </select></td>
           </tr>
-          <tr><td>&nbsp;</td> 
+          <tr><td>&nbsp;</td>
             <td> <input type="submit" name="'.$action.'" value="Добавить" /></td>
           </tr>
         </table></p>
         </form>
         </div>';
       }
-      
+
       break;
-      
+
     case 'team_list':
       $teams = formTeamsArray();
       echo '
-      
+
       <script language="javascript" type="text/javascript">
         function highlight(id) {
           document.getElementById(id).style.background = "#eee";
@@ -153,14 +153,14 @@ function show_teams ($action) {
           location.href = "?action=show_team&team="+id;
         }
       </script>
-      
+
       <style type="text/css">
         table th, table td {
           padding-left: 8px;
           padding-right: 6px;
         }
       </style>
-      
+
       <table style="font-size: 90%; white-space:nowrap;">
         <tr>
           <th rowspan="2">&nbsp;</th>
@@ -169,7 +169,7 @@ function show_teams ($action) {
           <th rowspan="2" style="border-right-color: #444;">Преподаватель</th>
           <th rowspan="2" style="border-right-color: #444; font-size: 70%;">Кол-во<br />человек</th>
           <th colspan="9" style="font-size: 70%; text-align:center">лицеисты</th>
-          
+
         </tr>
         <tr>
           <th style="text-align: center;">5</th>
@@ -183,16 +183,16 @@ function show_teams ($action) {
           <th style="text-align: center;">Ж</th>
         </tr>
       ';
-      
+
       $sum = array('num_people'=>0,'num_5'=>0,'num_7'=>0,'num_8'=>0,'num_9'=>0,'num_10'=>0,'num_11'=>0,'num_students'=>0,'num_m'=>0,'num_f'=>0);      
       foreach ($teams as $key=>$value) {
         foreach ($sum as $key1=>$value1) {
           @$sum[$key1]+=$value[$key1];
-        }        
+        }
       }
       if ( count($teams)-1 == 0 ) $num_students_average = 0;
       else $num_students_average = ceil($sum['num_students']/ (count($teams)-1) );
-      
+
       foreach ($teams as $key=>$value) {
         if ( $value['id'] != 0 ) {
           $correction = '';
@@ -243,20 +243,20 @@ function show_teams ($action) {
       </table>
       <p>Среднее количество лицеистов в звене: '.$num_students_average.'</p>
       ';
-      
+
       break;
-      
+
     case 'show_team':
       $participantlist = TRUE;
-      
+
       if ( isset ($_GET['team']) ) {
         $team = $_GET['team'];
-        
+
         echo '<script type="text/javascript">
         function participant(id) {
           TeamManage ( id, "add" )
         }
-      
+
         function TeamManage ( id, action ) {
           httpObjectTeam = getHTTPObject();
           if (httpObjectTeam != null) {
@@ -270,7 +270,7 @@ function show_teams ($action) {
             }
           }
         }
-        
+
         function highlight(id) {
           document.getElementById(id).style.background = "#eee";
         }
@@ -279,24 +279,24 @@ function show_teams ($action) {
         }
         function viewInfo(id) {
           location.href = "?action=participant_info&id="+id+"&fromlist";
-        }        
+        }
       </script>';
 
         $members = formTeamArray ( $team );
-        
+
         echo '<h2>Звено '.$team.'</h2>
       <p style="font-size: 80%;">редактирование списка | <a href="?action=show_team_photos&team='.@$_GET['team'].'">звено в лицах</a></p>
       <table>
         ';
         $k = 1;
         for ($i=0; $i<count($members); $i++) {
-          
+
           if ( $members[$i] != 0 ) {
             $member = get_participant_info( $members[$i] );
-          
+
             if ($i > 2) $delete = '<a style="color:red" href="javascript:TeamManage(\''.$member['id'].'\', \'delete\')">X</a>';
             else $delete = '<span style="color:gray">X</span>';
-            
+
             echo '
         <tr style="cursor:pointer" id="'.$member['id'].'" onmouseover="highlight(\''.$member['id'].'\')" onmouseout="nohighlight(\''.$member['id'].'\')">
           <td align="right" onclick="viewInfo('.$member['id'].')">'.$k.'</td>
@@ -342,23 +342,23 @@ function show_teams ($action) {
         ';
       }
       break;
-      
+
     case 'show_team_photos':
-      
+
       if ( isset ($_GET['team']) ) {
         $team = $_GET['team'];
 
         $members = formTeamArray ( $team );
-        
+
         echo '<h2>Звено '.$team.'</h2>
         <p style="font-size: 80%;"><a href="?action=show_team&team='.@$_GET['team'].'">редактирование списка</a> | звено в лицах</p>
         <div>';
-        
+
         for ($i=0; $i<count($members); $i++) {
-          
+
           if ( $members[$i] != 0 ) {
             $member = get_participant_info( $members[$i], 1 );
-            
+
             echo '
             <div style="float: left; font-size: 90%; height: 230px; text-align: center; width: 150px;">
               <img src="'.$member['photo_url'].'" style="max-height: 150px; max-width: 125px;" /><br />
@@ -369,12 +369,12 @@ function show_teams ($action) {
             ';
           }
         }
-        echo '</div>';        
+        echo '</div>';
       }
       break;
-      
+
     case 'edit_team':
-      
+
       if ( isset ($_POST[$action]) && $_POST['team']>0) {
         if ( !$userIsAdmin && $_POST['team'] != $user['team'] ) report_error ("Вы можете редактировать список только своего звена");
         else {
@@ -387,20 +387,20 @@ function show_teams ($action) {
           ';
         }
       }
-      
+
       else {
         $teams = formTeamArray($_GET['team']);
-      
+
         echo '
         <div>
         <form method="post" action="'.$_SERVER["PHP_SELF"].'?action='.$action.'">
         <p>
         <table class="userinfo">
           <tr>
-          <td>Звеньевой</td> 
+          <td>Звеньевой</td>
           <td><select name="leader" size="1">
       ';
-      
+
       foreach ( $litgroupSet as $key=>$value ) {
         if ( $value == 'Выпускник' || $value == 'Преподаватель') {}
         else {
@@ -413,15 +413,15 @@ function show_teams ($action) {
           echo '</optgroup>';
         }
       }
-          
+
       echo '
           </select></td>
-        </tr>  
+        </tr>
         <tr>
-          <td>Выпускник</td> 
+          <td>Выпускник</td>
           <td><select name="graduate" size="1"><option value="">нет</option>
       ';
-      
+
       foreach ( $litgroupSet as $key=>$value ) {
         if ( $value !== 'Выпускник' && $value !== 'Преподаватель') {}
         else {
@@ -434,14 +434,14 @@ function show_teams ($action) {
           echo '</optgroup>';
         }
       }
-          
+
       echo '
           </select></td>
         </tr>
-        <tr><td>Преподаватель</td> 
+        <tr><td>Преподаватель</td>
           <td><select name="teacher" size="1"><option value="">нет</option>
       ';
-      
+
       foreach ( $litgroupSet as $key=>$value ) {
         if ( $value !== 'Выпускник' && $value !== 'Преподаватель') {}
         else {
@@ -454,11 +454,11 @@ function show_teams ($action) {
           echo '</optgroup>';
         }
       }
-          
+
       echo '
           </select></td>
         </tr>
-          <tr><td><input type="hidden" name="team" value="'.$_GET['team'].'" /></td> 
+          <tr><td><input type="hidden" name="team" value="'.$_GET['team'].'" /></td>
             <td> <input type="submit" name="'.$action.'" value="Сохранить" /></td>
           </tr>
         </table></p>
@@ -468,11 +468,11 @@ function show_teams ($action) {
       if ($userIsAdmin) echo '
         <p><a href="?action=delete_team&team='.$_GET['team'].'"><i>Удалить звено</i></a></p>';
       }
-      
+
       break;
-      
+
     case 'delete_team':
-      
+
       if ( isset ($_POST[$action]) && $_POST['team']>0) {
         deleteTeam ( $_POST['team'] );
         echo '
@@ -482,8 +482,8 @@ function show_teams ($action) {
         </script>
         ';
       }
-      
-      else {      
+
+      else {
         echo '
         <p>Вы уверены, что хотите удалить '.$_GET['team'].' звено?<br />Восстановление будет невозможно</p>
         <div>
@@ -493,7 +493,7 @@ function show_teams ($action) {
         </div>
         ';
       }
-      
+
       break;
   }
 }

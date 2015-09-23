@@ -1,18 +1,18 @@
 <?php
 
-// Проверяет пару <логин:пароль> 
+// Проверяет пару <логин:пароль>
 // Возвращает TRUE/FALSE в случае удачного/неудачного выполнения
 // Аргументы: логин, password=пароль
 function check_password ($userid, $password) {
 	mysql_query ("START TRANSACTION;");
-	
+
 	$time = 10; $num = 3;
 	$q = mysql_query ("SELECT * FROM `logs_logins`
 			WHERE `userid`='$userid' AND
-			`timestamp` > DATE_SUB( now( ) , INTERVAL $time MINUTE ) AND 
+			`timestamp` > DATE_SUB( now( ) , INTERVAL $time MINUTE ) AND
 			`success` != '1' AND
 			`ip` = '$_SERVER[REMOTE_ADDR]'
-			ORDER BY `timestamp`  DESC;			
+			ORDER BY `timestamp`  DESC;
 	");
 	if( mysql_num_rows ($q) >= $num ) {
 		for ($i = 0; $i < $num; $i++) $f = mysql_fetch_array($q);
@@ -22,13 +22,13 @@ function check_password ($userid, $password) {
 			Блокировка автоматически закончится в ".date ( 'H:i:s', strtotime ($f['timestamp'])+$time*60 ) );
 		return FALSE;
 	}
-	
+
 	$time = 10; $num = 10;
 	$q = mysql_query ("SELECT * FROM `logs_logins`
 			WHERE `userid`='$userid' AND
-			`timestamp` > DATE_SUB( now( ) , INTERVAL $time MINUTE ) AND 
+			`timestamp` > DATE_SUB( now( ) , INTERVAL $time MINUTE ) AND
 			`success` != '1'
-			ORDER BY `timestamp`  DESC;			
+			ORDER BY `timestamp`  DESC;
 	");
 	if( mysql_num_rows ($q) >= $num ) {
 		for ($i = 0; $i < $num; $i++) $f = mysql_fetch_array($q);
@@ -38,29 +38,29 @@ function check_password ($userid, $password) {
 			Блокировка автоматически закончится в ".date ( 'H:i:s', strtotime ($f['timestamp'])+$time*60 ) );
 		return FALSE;
 	}
-	
+
 	$q = mysql_query("SELECT * FROM `users` WHERE `userid`='$userid'");
-	
+
 	if( mysql_num_rows ($q) == 0 ) {
 		report_error( "Логин не найден" );
 		return FALSE;
 	}
-	
+
 	$f = mysql_fetch_array($q);
 		if (crypt ( $password, $f['hash'] ) == $f['hash'] ) $success = TRUE;
-		else $success = FALSE;	
-	
-	
+		else $success = FALSE;
+
+
 	if ( !mysql_query("INSERT INTO `logs_logins` (`userid`,`ip`,`success`) VALUES ('$userid','$_SERVER[REMOTE_ADDR]','$success')") ) {
 		report_error( "Произошла ошибка записи информации в логи. Пожалуйста, попробуйте войти еще раз" );
 		return FALSE;
 	}
-	
+
 	if (!mysql_query ("COMMIT;")) {
 		report_error ('Произошла ошибка во время выполнения запроса. Пожалуйста, попробуйте еще раз');
 		return FALSE;
 	}
-	
+
 	if (!$success) report_error("Неправильный пароль.");
 	return $success;
 }
@@ -71,19 +71,19 @@ function check_password ($userid, $password) {
 function report_error($problem) {
 	global $errors, $user;
 	$errors[] = $problem;
-	
-	if (empty($user['id'])) $id = '0'; else $id = $user['id'];		
+
+	if (empty($user['id'])) $id = '0'; else $id = $user['id'];
 	$problemtolog = explode ('<br />', $problem);
-	$problemtolog = trim(strip_tags ($problemtolog[0]));	
+	$problemtolog = trim(strip_tags ($problemtolog[0]));
 	mysql_query ("START TRANSACTION;");
 	mysql_query ("
 	INSERT INTO `logs_errors` (`userid` , `error` , `ip`)
 	VALUES ('$id', '$problemtolog', '$_SERVER[REMOTE_ADDR]');");
 	mysql_query ("COMMIT;");
-	
+
 	echo '</div>';
 	print_errors(); die();
-	
+
 	return TRUE;
 }
 
@@ -121,18 +121,18 @@ function get_participant_info ($id, $fetch_external=0) {
 	$f = mysql_fetch_array($q);
 	$participant['id'] = $f['id'];
 	$participant['userid'] = $userid;
-	
+
 	$participant['name'] = $f['name'];
 	$participant['surname'] = $f['surname'];
 	$participant['litgroup'] = $f['litgroup'];
 	$participant['team'] = $f['team'];
-	if ($f['photo_url']=='' && $fetch_external) 
+	if ($f['photo_url']=='' && $fetch_external)
 		$participant['photo_url'] = getInfoFromPeople (
 			$participant['name'], $participant['surname'],
 			$participant['litgroup'], 'photo_url' );
 	else $participant['photo_url'] = $f['photo_url'];
 	$participant['blacklist'] = $f['blacklist'];
-	$participant['sex'] = $f['sex'];	
+	$participant['sex'] = $f['sex'];
 
 	$userid = idUserid ('userid', $id);
 	$q = mysql_query("SELECT * FROM `usersgroup` WHERE userid='$userid'");
@@ -141,16 +141,16 @@ function get_participant_info ($id, $fetch_external=0) {
 		$participant['group'][] = $f['group'];
 	}
 	$participant['group'][] = 'guest';
-	
+
 	return $participant;
 }
 
 function print_participant_info ($id) {
 
 	if ( !($participant = get_participant_info ($id, 1)) ) { return FALSE; }
-	
+
 	$arg = func_get_args();
-	
+
 	if ($participant['team'] != 0) {
 		foreach (formTeamsArray() as $key=>$value) {
 			if ($value['id'] == $participant['team']) $team_leader = $value['leader'];
@@ -158,13 +158,13 @@ function print_participant_info ($id) {
 		$team_output = '<a href="?action=show_team&team='.$participant['team'].'">'.$participant['team'].' ('.@$team_leader.')</a>';
 	}
 	else $team_output = "нет";
-	
+
 	if ($participant['sex']=='m') $sex_output='Мужской';
 	elseif ($participant['sex']=='f') $sex_output='Женский';
 	else $sex_output='';
 
 	if ( RequestModule == 'participantlist' ) $table_min_width = '';
-	else $table_min_width = 'style="min-width: 300px;"'; 
+	else $table_min_width = 'style="min-width: 300px;"';
 
 	echo '
 	<img src="'.$participant['photo_url'].'" align="left" style="border: 1px solid #ccc; display: block; margin: -1px 6px 0 0; width: auto !important; width: 150px; max-width: 150px;" />
@@ -180,38 +180,38 @@ function print_participant_info ($id) {
 	';
 	// лучше проверку прав текущего пользователя
 	if ( @check_user_access ('admin') ) {
-		
-		
+
+
 		/*
 		echo '
 			<tr><td style="vertical-align: top;">Системные группы:</td><td><ul>';
 		if (!empty ($participant['group'])) foreach ($participant['group'] as $key=>$value) {
 			$q = mysql_query("SELECT * FROM `groups` WHERE systemname='$value'");
 			$f = mysql_fetch_array($q);
-			if ($f['name']!=='') echo '<li>'.$f['name'].'</li>';	
+			if ($f['name']!=='') echo '<li>'.$f['name'].'</li>';
 		}
 		echo '</ul></td></tr>';
 		*/
 	}
-	echo '	
+	echo '
 	</table>'."\n";
-	
+
 	return TRUE;
 }
 
 function formTeamsArray () {
 	$array = array();
 	$q = mysql_query ("SELECT * FROM `teams` ORDER BY  `id` ASC");
-	
+
 	$array[0]['id'] = 0;
 	$array[0]['leader'] = 'нет';
-	
+
 	for ($i=1; $i <= mysql_num_rows ($q); $i++) {
 		$f = mysql_fetch_array($q);
 		$array[$f['id']]['id'] = $f['id'];
-		
+
 		$fields = array (0=>'leader', 1=>'graduate', 2=>'teacher');
-		
+
 		foreach ($fields as $key=>$value) {
 			if ( $f[$value] != 0) {
 				$info = get_participant_info ($f[$value]);
@@ -234,44 +234,44 @@ function formTeamsArray () {
 
 function formTeamArray ( $id ) {
 	$array = array();
-	
+
 	$q = mysql_query ( "SELECT * FROM `teams` WHERE `id`='$id'" );
 	$f = mysql_fetch_array($q);
-	
+
 	$array[0] = $f['leader'];
 	$array[1] = $f['graduate'];
 	$array[2] = $f['teacher'];
-	
+
 	$q = mysql_query( "SELECT * , CONVERT( SUBSTRING_INDEX(  `litgroup` ,  '.', 1 ) , UNSIGNED ) AS  `grade` , SUBSTRING_INDEX( SUBSTRING_INDEX(  `litgroup` ,  '.', 2 ) ,  '.' , -1 ) AS  `group`
 		FROM `participants`
 		WHERE `team`='$id' AND `id`!='$array[0]' AND `id`!='$array[1]' AND `id`!='$array[2]'
 		ORDER BY  `grade` DESC ,  `group` ASC ,  `surname` ASC;" );
-	
+
 	for ( $i=0; $i < mysql_num_rows( $q ); $i++ ) {
 		$f = mysql_fetch_array( $q );
 		$array[$i+3] = $f['id'];
 	}
-	
+
 	return $array;
 }
 
 function formParticipantArray ( $sortField, $sortDir ) {
 	$arg = func_get_args();
 	$array = array();
-	
+
 	if (@$arg['4']=='1') $blacklist = 'AND `blacklist` = \'1\''; else $blacklist = '';
-	
+
 	$q = mysql_query("
 		SELECT * FROM `participants`
 		WHERE  `surname` LIKE '$arg[2]%' AND `litgroup` LIKE '$arg[3]%' $blacklist
 		ORDER BY `$sortField` $sortDir;
 	");
-									
+
 	for ($i=0; $i < mysql_num_rows ($q); $i++) {
 		$f = mysql_fetch_array($q);
 		$array[$i] = get_participant_info ($f['id']);
 	}
-		
+
 	return $array;
 }
 
@@ -287,18 +287,18 @@ function getGroupsList () {
 function idUserid ( $target, $id ) {
 	if ( $target == "userid" ) {				// id > userid
 		$q = mysql_query ("SELECT * FROM `users` WHERE `id` = '$id'");
-		
+
 		if( mysql_num_rows ($q) == 0 ) return $id;
-		
+
 		$f = mysql_fetch_array($q);
 		$userid = $f['userid'];
 		return $userid;
 	}
 	elseif ( $target == "id" ) {				// userid > id
 		$q = mysql_query ("SELECT * FROM `users` WHERE `userid` = '$id'");
-		
+
 		if( mysql_num_rows ($q) == 0 ) return $id;
-		
+
 		$f = mysql_fetch_array($q);
 		$id = $f['id'];
 		return $id;
@@ -307,10 +307,10 @@ function idUserid ( $target, $id ) {
 }
 
 function saveTeam ( $id, $leader, $graduate, $teacher ) {
-	global $user; 
-	
+	global $user;
+
 	if ( $id == 0 ) $newTeam = TRUE; else $newTeam = FALSE;
-	
+
 	$info = get_participant_info($leader);
 	if ( ( $newTeam && $info['team'] != 0 ) || ( !$newTeam && ( $info['team'] != $id && $info['team'] != 0) ) ) {
 		report_error ("Звеньевой уже состоит в $info[team] звене! Звено не будет сохранено");
@@ -338,78 +338,78 @@ function saveTeam ( $id, $leader, $graduate, $teacher ) {
 			return FALSE;
 		}
 	}
-	
+
 	mysql_query ("START TRANSACTION;");
-	
+
 	if ( $newTeam ) {
 		$q = mysql_query ("SELECT MAX(`id`) FROM `teams`");
 		$f = mysql_fetch_array ($q);
 		$id = $f['MAX(`id`)'] + 1;
 	}
-	
+
 	if ( !$newTeam ) {
 		$team_old = formTeamArray($id);
-		
+
 		if ( !mysql_query ("
 		UPDATE `participants` SET `team` = '0'
 		WHERE `id` = '$team_old[0]' LIMIT 1 ;") ) {
 			mysql_query ("ROLLBACK;");
-			report_error ("Произошла ошибка изменения участника слета"); 
+			report_error ("Произошла ошибка изменения участника слета");
 			return FALSE;
 		}
 		if ( !mysql_query ("
 		UPDATE `participants` SET `team` = '0'
 		WHERE `id` = '$team_old[1]' LIMIT 1 ;") ) {
 			mysql_query ("ROLLBACK;");
-			report_error ("Произошла ошибка изменения участника слета"); 
+			report_error ("Произошла ошибка изменения участника слета");
 			return FALSE;
 		}
 		if ( !mysql_query ("
 		UPDATE `participants` SET `team` = '0'
 		WHERE `id` = '$team_old[2]' LIMIT 1 ;") ) {
 			mysql_query ("ROLLBACK;");
-			report_error ("Произошла ошибка изменения участника слета"); 
+			report_error ("Произошла ошибка изменения участника слета");
 			return FALSE;
 		}
 	}
-	
+
 	if ( !mysql_query ("
 	UPDATE `participants` SET `team` = '$id'
 	WHERE `id` = '$leader' LIMIT 1 ;") ) {
 		mysql_query ("ROLLBACK;");
-		report_error ("Произошла ошибка изменения участника слета"); 
+		report_error ("Произошла ошибка изменения участника слета");
 		return FALSE;
 	}
 	if ( !mysql_query ("
 	UPDATE `participants` SET `team` = '$id'
 	WHERE `id` = '$graduate' LIMIT 1 ;") ) {
 		mysql_query ("ROLLBACK;");
-		report_error ("Произошла ошибка изменения участника слета"); 
+		report_error ("Произошла ошибка изменения участника слета");
 		return FALSE;
 	}
 	if ( !mysql_query ("
 	UPDATE `participants` SET `team` = '$id'
 	WHERE `id` = '$teacher' LIMIT 1 ;") ) {
 		mysql_query ("ROLLBACK;");
-		report_error ("Произошла ошибка изменения участника слета"); 
+		report_error ("Произошла ошибка изменения участника слета");
 		return FALSE;
 	}
-	
+
 	if ( $newTeam ) {
 		if ( !mysql_query ("
 		INSERT INTO `teams` (`id`, `leader`, `graduate`, `teacher`)
 		VALUES ('$id', '$leader', '$graduate', '$teacher' )") ) {
 			mysql_query ("ROLLBACK;");
-			report_error ("Произошла ошибка добавления звена в БД"); 
+			report_error ("Произошла ошибка добавления звена в БД");
 			return FALSE;
 		}
 	}
-	else {	
+	else {
 		if ( !mysql_query ("
 		UPDATE `teams` SET `leader`='$leader', `graduate`='$graduate', `teacher`='$teacher'
 		WHERE `id` = '$id' LIMIT 1 ;") ) {
 			mysql_query ("ROLLBACK;");
-			report_error ("Произошла ошибка добавления звена в БД"); 
+			report_error ("Произошла ошибка добавления звена в БД");
 			return FALSE;
 		}
 	}
@@ -417,33 +417,33 @@ function saveTeam ( $id, $leader, $graduate, $teacher ) {
 	INSERT INTO `logs_admin` (`admin_id`, `id`, `action`, `ip`)
 	VALUES ('$user[userid]', $id, 'Созранение звена', '$_SERVER[REMOTE_ADDR]');") ) {
 		mysql_query ("ROLLBACK;");
-		report_error ("Произошла ошибка записи в логи. Пользователь не был добавлен"); 
+		report_error ("Произошла ошибка записи в логи. Пользователь не был добавлен");
 		return FALSE;
 	}
-	
+
 	mysql_query ("COMMIT;");
-	
+
 	return $id;
 }
 
 function deleteTeam ( $id ) {
 	mysql_query ("START TRANSACTION;");
-		
+
 	if ( !mysql_query ("
 	UPDATE `participants` SET `team` = '0'
 	WHERE `team` = '$id';") ) {
 		mysql_query ("ROLLBACK;");
-		report_error ("Не удалось обновить участников слета"); 
+		report_error ("Не удалось обновить участников слета");
 		return FALSE;
 	}
-	
+
 	if ( !mysql_query ("
 	DELETE FROM `teams` WHERE `id`='$id';") ) {
 		mysql_query ("ROLLBACK;");
-		report_error ("Не удалось удалить звено из БД"); 
+		report_error ("Не удалось удалить звено из БД");
 		return FALSE;
 	}
-	
+
 	$q = mysql_query ("SELECT * FROM `teams`");
 	for ($i=0; $i<mysql_num_rows($q); $i++) {
 		$f = mysql_fetch_array ($q);
@@ -452,26 +452,26 @@ function deleteTeam ( $id ) {
 		$q = mysql_query ("SELECT * FROM `teams`");
 		for ($i=0; $i<mysql_num_rows($q); $i++) {
 			$f = mysql_fetch_array ($q);
-			$k=$i+1;
+			$k = $i + 1;
 			if ($k != $f['id']) {
 				if ( !mysql_query ("
 				UPDATE `teams` SET `id`='$k'
 				WHERE `id` = '$f[id]' LIMIT 1 ;") ) {
 					mysql_query ("ROLLBACK;");
-					report_error ("Не удалось провести синхронизацию таблиц звеньев и участников (#1)"); 
+					report_error ("Не удалось провести синхронизацию таблиц звеньев и участников (#1)");
 					return FALSE;
 				}
 				if ( !mysql_query ("
 				UPDATE `participants` SET `team` = '$k'
 				WHERE `team` = '$f[id]';") ) {
 					mysql_query ("ROLLBACK;");
-					report_error ("Не удалось провести синхронизацию таблиц звеньев и участников (#2)"); 
+					report_error ("Не удалось провести синхронизацию таблиц звеньев и участников (#2)");
 					return FALSE;
 				}
 			}
 		}
 	}
-	
+
 	mysql_query ("COMMIT;");
 	return TRUE;
 }
@@ -479,37 +479,37 @@ function deleteTeam ( $id ) {
 function addUser ( $id, $userid, $password, $group ) {
 	global $user;
 	$arg = func_get_args();
-	
+
 	foreach ( $arg as $key=>$value ) {
 		if ( $value == '' ) {
 			report_error ("Форма заполнена не полностью");
 			return FALSE;
 		}
 	}
-	
+
 	$q = mysql_query ("SELECT * FROM `users` WHERE `id` = '$id' OR `userid` = '$userid';");
 	if ( mysql_num_rows ($q) > 0 ) {
 		report_error ("Пользователь для этого участника или с таким логином уже существует. Пользователь не будет создан.");
 		return FALSE;
 	}
-	
+
 	$hash = crypt ($password);
-	
+
 	mysql_query ("START TRANSACTION;");
-	
+
 	if ( !mysql_query ("
 	INSERT INTO `users` (`id`, `userid`, `hash`)
 	VALUES ('$id', '$userid', '$hash')") ) {
 		mysql_query ("ROLLBACK;");
-		report_error ("Произошла ошибка добавления пользователя $userid в БД"); 
+		report_error ("Произошла ошибка добавления пользователя $userid в БД");
 		return FALSE;
 	}
-	
+
 	if ( !updateUsersGroup ( $userid, $group ) ) {
 		mysql_query ("ROLLBACK;");
 		return FALSE;
 	}
-	
+
 	if ( !mysql_query ("
 	INSERT INTO `logs_admin` (`admin_id`, `id`, `action`, `ip`)
 	VALUES ('$user[userid]', '$userid', 'Создание пользователя', '$_SERVER[REMOTE_ADDR]');") ) {
@@ -517,17 +517,15 @@ function addUser ( $id, $userid, $password, $group ) {
 		report_error ("Произошла ошибка записи в логи. Пользователь не был добавлен"); 
 		return FALSE;
 	}
-	
 	mysql_query ("COMMIT;");
-	
 	return TRUE;
 }
 
-function addParticipant ( $participant ) { 
+function addParticipant ( $participant ) {
 	global $user;
 
 	$arg = func_get_args();
-	
+
 	/*
 	foreach ( $arg as $key=>$value ) {
 		if ( $value == '' ) {
@@ -542,9 +540,9 @@ function addParticipant ( $participant ) {
 		report_error ("Пользователь с такими именем, фамилией и группой уже существует");
 		return FALSE;
 	}
-	
+
 	mysql_query ("START TRANSACTION;");
-	
+
 	$q = mysql_query ("SELECT MAX(`id`) FROM `participants`");
 	$f = mysql_fetch_array ($q);
 	$id = $f['MAX(`id`)'] + 1;
@@ -553,7 +551,7 @@ function addParticipant ( $participant ) {
 	INSERT INTO `participants` (`id`, `name`, `surname`, `litgroup`, `team`, `sex`, `photo_url`)
 	VALUES ('$id', '".$participant['name']."', '".$participant['surname']."', '".$participant['litgroup']."', '".@$participant['team']."', '".$participant['sex']."', '".$participant['photo_url']."')") ) {
 		mysql_query ("ROLLBACK;");
-		report_error ("Произошла ошибка добавления участника ".$participant['name']." ".$participant['surname']." в БД"); 
+		report_error ("Произошла ошибка добавления участника ".$participant['name']." ".$participant['surname']." в БД");
 		return FALSE;
 	}
 	/*
@@ -566,20 +564,20 @@ function addParticipant ( $participant ) {
 	INSERT INTO `logs_admin` (`admin_id`, `id`, `action`, `ip`)
 	VALUES ('$user[userid]', $id, 'Создание участника', '$_SERVER[REMOTE_ADDR]');") ) {
 		mysql_query ("ROLLBACK;");
-		report_error ("Произошла ошибка записи в логи. Пользователь не был добавлен"); 
+		report_error ("Произошла ошибка записи в логи. Пользователь не был добавлен");
 		return FALSE;
 	}
-	
+
 	mysql_query ("COMMIT;");
-	
+
 	return $id;
 }
 
 function editParticipant ( $participant ) {
 	global $account;
-  	
+
 	$arg = func_get_args();
-	
+
 	/*
 	foreach ( $arg as $key=>$value ) {
 		if ( $value == '' ) {
@@ -588,12 +586,12 @@ function editParticipant ( $participant ) {
 		}
 	}
 	*/
-	
+
 	if ($participant['blacklist']=='1' && @$participant['team']!='0') {
 		report_error ("Человек находится в черном списке! Нельзя оставлять его в звене! ;-)");
 		return FALSE;
 	}
-	
+
 	$q = mysql_query ("SELECT * FROM `participants` WHERE `name` = '".$participant['name']."' AND `surname` = '".$participant['surname']."' AND `litgroup` = '".$participant['litgroup']."';");
 	for ($i=0; $i<mysql_num_rows($q); $i++) {
 		$f = mysql_fetch_array($q);
@@ -602,10 +600,10 @@ function editParticipant ( $participant ) {
 			return FALSE;
 		}
 	}
-	
+
 	$q = mysql_query ("SELECT * FROM `participants` WHERE `id` = '".$participant['id']."'");
 	$old = mysql_fetch_array($q);
-	
+
 	if ( mysql_num_rows ( mysql_query ("
   SELECT * FROM `teams` WHERE (`leader` = '".$participant['id']."' OR `graduate` = '".$participant['id']."' OR `teacher` = '".$participant['id']."') AND `id` != '".@$participant['team']."'
   ") ) > 0 ) {
@@ -613,15 +611,15 @@ function editParticipant ( $participant ) {
 		return FALSE;
 	}
 	mysql_query ("START TRANSACTION;");
-	
+
 	if ( !mysql_query ("
 	UPDATE `participants` SET `name` = '".$participant['name']."', `surname` = '".$participant['surname']."', `litgroup` = '".$participant['litgroup']."', `sex`='".$participant['sex']."', `team` = '".@$participant['team']."', `blacklist` = '".@$participant['blacklist']."', `photo_url` = '".@$participant['photo_url']."'
 	WHERE `id` = '".$participant['id']."' LIMIT 1 ;") ) {
 		mysql_query ("ROLLBACK;");
-		report_error ("Произошла ошибка изменения участника слета"); 
+		report_error ("Произошла ошибка изменения участника слета");
 		return FALSE;
 	}
-	
+
 	/*if ( !updateUsersGroup ( $id, $group ) ) {
 		mysql_query ("ROLLBACK;");
 		return FALSE;
@@ -636,35 +634,35 @@ function editParticipant ( $participant ) {
 	INSERT INTO `logs_admin` (`admin_id`, `id`, `action`, `ip`)
 	VALUES ('$account[id]', '".$participant['id']."', '$log', '$_SERVER[REMOTE_ADDR]');") ) {
 		mysql_query ("ROLLBACK;");
-		report_error ("Произошла ошибка записи в логи. Пользователь не был изменения"); 
+		report_error ("Произошла ошибка записи в логи. Пользователь не был изменения");
 		return FALSE;
 	}
-	
+
 	mysql_query ("COMMIT;");
-	
+
 	return TRUE;
 }
 
 function updateUsersGroup ( $userid, $group ) {
 	mysql_query ("START TRANSACTION;");
-	
+
 	if ( !mysql_query ("DELETE FROM `usersgroup` WHERE `userid`='$userid';") ) {
 		mysql_query ("ROLLBACK;");
-		report_error ("Произошла ошибка обновления групп пользователя"); 
+		report_error ("Произошла ошибка обновления групп пользователя");
 		return FALSE;
 	}
-	
+
 	foreach ($group as $sysgroup) {
 		if (!mysql_query ("
 			INSERT INTO `usersgroup` (`userid` , `group`)
 			VALUES ('$userid', '$sysgroup');") ) {
-			
+
 			mysql_query ("ROLLBACK;");
-			report_error ("Произошла ошибка обновления групп пользователя"); 			
+			report_error ("Произошла ошибка обновления групп пользователя");
 			return FALSE;
 		}
 	}
-	
+
 	mysql_query ("COMMIT;");
 	return TRUE;
 }
@@ -686,14 +684,14 @@ function getInfoFromPeople ( $name, $surname, $litgroup, $field ) {
 		case '':
 			return;
 			break;
-		default: 
+		default:
 			$table = 'students';
 			list($grade, $group) = explode('.', $litgroup);
 			$url = $url.'grade='.$grade.'&group='.$group.'&table='.$table;
 			break;
 	}
 	$url = $url.'&name='.$name.'&surname='.$surname;
-	
+
 	$ch = curl_init();
 	curl_setopt ($ch, CURLOPT_URL, $url);
 	curl_setopt ($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -706,7 +704,7 @@ function getInfoFromPeople ( $name, $surname, $litgroup, $field ) {
 	if ( $xml = simplexml_load_string($response) ) {
 		if ($xml->count() == 1) $person = (array) $xml->person[0];
 
-		$return = @$person[$field];			
+		$return = @$person[$field];
 	}
 	return $return;
 }

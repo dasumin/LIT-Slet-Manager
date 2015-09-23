@@ -16,9 +16,9 @@ $modules[$module]['title'][] = 'Новый пользователь систем
 $modules[$module]['groups'][] = 'admin';
 
 function show_admin ($action) {
-	global $modules, $user, $participantlist, $litgroupSet;	
+	global $modules, $user, $participantlist, $litgroupSet;
 	$module = $modules['admin'];
-	
+
 	switch ($action) {
 // Добавить пользователя
 		case 'admin_add_user':
@@ -27,10 +27,10 @@ function show_admin ($action) {
 			<script type="text/javascript">
 				function participant(id) {
 					document.getElementById(\'id\').value=id;
-				}			
-			</script>	
+				}
+			</script>
 			';
-			
+
 			if ( isset ($_POST[$action]) ) {
 				if (empty ($_POST['group'])) $sysgroup = Array();	
 				 else $sysgroup =  $_POST['group'];
@@ -38,31 +38,31 @@ function show_admin ($action) {
 					echo '
 					<p>Пользователь успешно добавлен</p>
 					';
-				}	
+				}
 				else echo 'Ошибка добавления пользователя';
 			}
-	
+
 			echo '
 			<div>
 			<form method="post" action="'.$_SERVER["PHP_SELF"].'?action='.$action.'">
 			<p>
 			<table class="userinfo">
 				<tr>
-					<td>id лицеиста</td> 
+					<td>id лицеиста</td>
 					<td><input type="text" name="id" id="id" value="" /></td>
-				</tr>	
+				</tr>
 				<tr>
-					<td>Логин</td> 
+					<td>Логин</td>
 					<td><input type="text" name="userid" value="" /></td>
 				</tr>
 				<tr>
-					<td>Пароль</td> 
+					<td>Пароль</td>
 					<td><input type="password" name="password" value="" /></td>
 				</tr>
-				<tr><td>Системная<br />группа</td> 
+				<tr><td>Системная<br />группа</td>
 					<td><select name="group[]" size="3" multiple>
 				';
-				
+
 				foreach ( getGroupsList() as $sysname=>$name) {
 					$atr = '';
 					/*foreach ( $editUser['group'] as $value ) {
@@ -70,18 +70,18 @@ function show_admin ($action) {
 					}*/
 					echo '<option value="'.$sysname.'" '.$atr.'>'.$name.'</option>';
 				}
-									
+
 				echo '</select>
 					</td>
 				</tr>
-				<tr><td>&nbsp;</td> 
+				<tr><td>&nbsp;</td>
 					<td> <input type="submit" name="'.$action.'" value="Добавить" /></td>
-				</tr>		
+				</tr>
 			</table></p>
 			</form>
 			</div>';
-			break;		
-		
+			break;
+
 	}
 }
 

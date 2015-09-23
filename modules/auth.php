@@ -6,11 +6,11 @@ $module = 'auth';
 if ( !defined("RequestModule") || RequestModule !== 'core' ) die;
 
 // Отработать успешный вход и выход нужно до всего остального, чтобы правильно собрать меню
-if (	$action === "login" &&
+if ($action === "login" &&
 	isset($_POST['login']) &&
 	isset($_POST['userid']) &&
 	isset($_POST['password'])
-) {
+	) {
 	if ( check_password ($_POST['userid'],$_POST['password']) ) $_SESSION['userid'] = $_POST['userid'];
 }
 
@@ -33,15 +33,15 @@ echo '<div id="auth">';
 if ( !empty ($_SESSION['userid'])  && $action !== $modules[$module]['action'][1] ) {
 	echo 'Вы вошли как '.@$user['name'].' '.@$user['surname'].'<a href="'.$_SERVER["SCRIPT_NAME"].'?action=logout">Выйти</a>';
 }
-else {	
+else {
 	echo '<a href="'.$_SERVER["SCRIPT_NAME"].'?action=login">Войти</a> в систему';
 }
 echo '</div>';
 
 function show_auth ($action) {
-	global $modules;	
+	global $modules;
 	$module = $modules['auth'];
-	
+
 	$changeaction = 1;
 	foreach ($modules['auth']['action'] as $key=>$value) {
 		if ( $action === $value ) { $changeaction = 0; break; }
@@ -75,14 +75,14 @@ function show_auth ($action) {
 			break;
 		case $module['action'][1]:
 			echo 'Переходим на стартовую';
-			echo '
-				<script language="javascript">
+							echo '
+							<script language="javascript">
 				setTimeout("location.href=\''.$_SERVER['PHP_SELF'].'\'", 500);
-				</script>
-				';
-			break;
+							</script>
+							';
+							break;
 		default:
-		
+
 	}
 }
 ?>
