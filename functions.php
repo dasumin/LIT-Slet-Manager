@@ -65,6 +65,18 @@ function check_password ($userid, $password) {
 	return $success;
 }
 
+function check_password_reset($userid) {
+	$q = mysql_query("SELECT * FROM `users` WHERE `userid`='$userid'");
+
+	if( mysql_num_rows ($q) == 0 ) {
+		report_error( "Логин не найден" );
+		return FALSE;
+	}
+
+	$f = mysql_fetch_array($q);
+	return $f['password_reset'] === '1' ? TRUE : FALSE;
+}
+
 // Добавляет ошибку в общий массив ошибок
 // Возвращает TRUE/FALSE в случае удачного/неудачного выполнения
 // Аргументы: problem=описание ошибки
@@ -476,12 +488,12 @@ function deleteTeam ( $id ) {
 	return TRUE;
 }
 
-function addUser ( $id, $userid, $password, $group ) {
+function addUser ( $id, $userid, $password, $group, $password_reset ) {
 	global $user;
 	$arg = func_get_args();
 
 	foreach ( $arg as $key=>$value ) {
-		if ( $value == '' ) {
+		if ( $value === '' ) {
 			report_error ("Форма заполнена не полностью");
 			return FALSE;
 		}
@@ -498,8 +510,8 @@ function addUser ( $id, $userid, $password, $group ) {
 	mysql_query ("START TRANSACTION;");
 
 	if ( !mysql_query ("
-	INSERT INTO `users` (`id`, `userid`, `hash`)
-	VALUES ('$id', '$userid', '$hash')") ) {
+	INSERT INTO `users` (`id`, `userid`, `hash`, `password_reset`)
+	VALUES ('$id', '$userid', '$hash', '$password_reset')") ) {
 		mysql_query ("ROLLBACK;");
 		report_error ("Произошла ошибка добавления пользователя $userid в БД");
 		return FALSE;
@@ -514,7 +526,32 @@ function addUser ( $id, $userid, $password, $group ) {
 	INSERT INTO `logs_admin` (`admin_id`, `id`, `action`, `ip`)
 	VALUES ('$user[userid]', '$userid', 'Создание пользователя', '$_SERVER[REMOTE_ADDR]');") ) {
 		mysql_query ("ROLLBACK;");
-		report_error ("Произошла ошибка записи в логи. Пользователь не был добавлен"); 
+		report_error ("Произошла ошибка записи в логи. Пользователь не был добавлен");
+		return FALSE;
+	}
+
+	mysql_query ("COMMIT;");
+
+	return TRUE;
+}
+
+function setUserPassword($userid, $password) {
+	$hash = crypt ($password);
+
+	mysql_query ("START TRANSACTION;");
+
+	if ( !mysql_query("UPDATE `users` SET `hash` = '$hash', `password_reset` = 0 WHERE `userid` = '$userid'") )
+	{
+		mysql_query ("ROLLBACK;");
+		report_error ("Произошла ошибка записи пароля пользователя $userid в БД");
+		return FALSE;
+	}
+
+	if ( !mysql_query ("INSERT INTO `logs_admin` (`admin_id`, `id`, `action`, `ip`)
+						VALUES ('$userid', '$userid', 'Смена пароля', '$_SERVER[REMOTE_ADDR]');")
+	   ) {
+		mysql_query ("ROLLBACK;");
+		report_error ("Произошла ошибка записи в логи. Пользователь не был добавлен");
 		return FALSE;
 	}
 	mysql_query ("COMMIT;");

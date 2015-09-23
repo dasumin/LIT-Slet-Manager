@@ -32,14 +32,18 @@ function show_admin ($action) {
 			';
 
 			if ( isset ($_POST[$action]) ) {
-				if (empty ($_POST['group'])) $sysgroup = Array();	
-				 else $sysgroup =  $_POST['group'];
-				if ( addUser ( $_POST['id'], $_POST['userid'], $_POST['password'], $sysgroup ) )  {
-					echo '
-					<p>Пользователь успешно добавлен</p>
-					';
+				if (empty ($_POST['group'])) {
+					$sysgroup = Array();
+				} else {
+					$sysgroup =  $_POST['group'];
 				}
-				else echo 'Ошибка добавления пользователя';
+				$password_reset = isset($_POST['password_reset']) ? TRUE : FALSE;
+				if ( addUser ( $_POST['id'], $_POST['userid'], $_POST['password'], $sysgroup,
+							   $password_reset ) )  {
+					echo '<p>Пользователь успешно добавлен</p>';
+				} else {
+					echo 'Ошибка добавления пользователя';
+				}
 			}
 
 			echo '
@@ -57,7 +61,8 @@ function show_admin ($action) {
 				</tr>
 				<tr>
 					<td>Пароль</td>
-					<td><input type="password" name="password" value="" /></td>
+					<td><input type="text" name="password" value="" /><br />
+						<input type="checkbox" name="password_reset" value="" /> Сменить пароль при следующем входе</td>
 				</tr>
 				<tr><td>Системная<br />группа</td>
 					<td><select name="group[]" size="3" multiple>

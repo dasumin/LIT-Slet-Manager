@@ -11,7 +11,13 @@ if ($action === "login" &&
 	isset($_POST['userid']) &&
 	isset($_POST['password'])
 	) {
-	if ( check_password ($_POST['userid'],$_POST['password']) ) $_SESSION['userid'] = $_POST['userid'];
+	if ( check_password ($_POST['userid'],$_POST['password']) ) {
+		if ( check_password_reset($_POST['userid']) === FALSE ) {
+			$_SESSION['userid'] = $_POST['userid'];
+		} else {
+			$action = 'password_reset';
+		}
+	}
 }
 
 if ($action === "logout") {
@@ -25,9 +31,10 @@ $modules[$module]['action'][0] = 'login';
 $modules[$module]['title'][0] = 'Вход в систему';
 $modules[$module]['action'][1] = 'logout';
 $modules[$module]['title'][1] = 'До встречи ;-)';
+$modules[$module]['action'][2] = 'password_reset';
+$modules[$module]['title'][2] = 'Смена пароля';
 
 $modules[$module]['groups'][] = 'guest'; // группы, которым разрешено пользоваться модулем
-$modules[$module]['groups'][] = 'company';
 
 echo '<div id="auth">';
 if ( !empty ($_SESSION['userid'])  && $action !== $modules[$module]['action'][1] ) {
@@ -37,6 +44,15 @@ else {
 	echo '<a href="'.$_SERVER["SCRIPT_NAME"].'?action=login">Войти</a> в систему';
 }
 echo '</div>';
+
+function print_redirect_to_main() {
+	echo 'Переходим на стартовую';
+	echo '
+		<script language="javascript">
+		setTimeout("location.href=\''.$_SERVER['PHP_SELF'].'\'", 500);
+		</script>
+		';
+}
 
 function show_auth ($action) {
 	global $modules;
@@ -74,13 +90,57 @@ function show_auth ($action) {
 			';
 			break;
 		case $module['action'][1]:
-			echo 'Переходим на стартовую';
+			print_redirect_to_main();
+			break;
+		case $module['action'][2]:
+
+			if (!empty ($_SESSION['password_reset'])) {
+				$userid = $_SESSION['password_reset'];
+			} elseif (isset($_POST['userid'])) {
+				$userid = $_POST['userid'];
+			}
+			else {
+				print_redirect_to_main();
+				break;
+			}
+
+			if ( !empty ($_SESSION['password_reset']) ) {
+
+				unset($_SESSION['password_reset']);
+				session_unregister('password_reset');
+
+				if (isset($_POST['password']) && isset($_POST['password_check'])) {
+					if ($_POST['password'] === $_POST['password_check']) {
+						if (setUserPassword($userid, $_POST['password'])) {
+							echo "Вы успешно сменили пароль<br />Перенаправляем...";
 							echo '
 							<script language="javascript">
-				setTimeout("location.href=\''.$_SERVER['PHP_SELF'].'\'", 500);
+							setTimeout("location.href=\''.$_SERVER['PHP_SELF'].'?action=login&return='.$return.'\'", 500);
 							</script>
 							';
 							break;
+						} else {
+							echo '<p>При смене пароля возникла ошибка. Попробуйте, пожалуйста, еще раз.</p>';
+						}
+					} else {
+						echo '<p>Введённые пароли не совпадают. Попробуйте, пожалуйста, еще раз.</p>';
+					}
+				}
+
+			}
+
+			$_SESSION['password_reset'] = $userid;
+			echo '
+				<p>Чтобы воспользоваться системой, Вам необходимо сменить пароль.</p>
+				<form method="POST" action="'.$_SERVER["PHP_SELF"].'?action='.$action.'&return='.$return.'">
+				<table class="form">
+					<tr><td>Новый пароль:</td><td><input type="password" name="password" /></td></tr>
+					<tr><td>Еще раз:</td><td><input type="password" name="password_check" /></td></tr>
+					<tr><td></td><td><input type="submit" name="'.$module['action'][2].'" value="Сменить пароль" /></td></tr>
+				</table>
+				</form>
+			';
+			break;
 		default:
 
 	}
