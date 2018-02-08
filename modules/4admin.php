@@ -65,7 +65,7 @@ function show_admin ($action) {
 						<input type="checkbox" name="password_reset" value="" /> Сменить пароль при следующем входе</td>
 				</tr>
 				<tr><td>Системная<br />группа</td>
-					<td><select name="group[]" size="3" multiple>
+					<td><select name="group[]" size="4" multiple>
 				';
 
 				foreach ( getGroupsList() as $sysname=>$name) {

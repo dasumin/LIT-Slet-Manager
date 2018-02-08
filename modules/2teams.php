@@ -33,6 +33,7 @@ $modules[$module]['title'][] = 'Удаление звена';
 
 $modules[$module]['groups'][] = 'admin';
 $modules[$module]['groups'][] = 'leader';
+$modules[$module]['groups'][] = 'organizer';
 
 function show_teams ($action) {
   global $modules, $user, $participantlist, $litgroupSet;
@@ -40,7 +41,7 @@ function show_teams ($action) {
 
   $userIsAdmin = FALSE;
   foreach (@$user['group'] as $key=>$value) {
-    if ($value=='admin') $userIsAdmin = TRUE;
+    if ($value == 'admin' or $value == 'organizer') $userIsAdmin = TRUE;
   }
 
   switch ($action) {
