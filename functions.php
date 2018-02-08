@@ -326,10 +326,12 @@ function saveTeam ( $id, $leader, $graduate, $teacher ) {
 
 	if ( $id == 0 ) $newTeam = TRUE; else $newTeam = FALSE;
 
-	$info = get_participant_info($leader);
-	if ( ( $newTeam && $info['team'] != 0 ) || ( !$newTeam && ( $info['team'] != $id && $info['team'] != 0) ) ) {
-		report_error ("Звеньевой уже состоит в $info[team] звене! Звено не будет сохранено");
-		return FALSE;
+    if ( $leader != '' ) {
+		$info = get_participant_info($leader);
+		if ( ( $newTeam && $info['team'] != 0 ) || ( !$newTeam && ( $info['team'] != $id && $info['team'] != 0) ) ) {
+			report_error ("Звеньевой уже состоит в $info[team] звене! Звено не будет сохранено");
+			return FALSE;
+		}
 	}
 	if ( $graduate != '' ) {
 		$info = get_participant_info($graduate);
@@ -365,21 +367,21 @@ function saveTeam ( $id, $leader, $graduate, $teacher ) {
 	if ( !$newTeam ) {
 		$team_old = formTeamArray($id);
 
-		if ( !mysql_query ("
+		if ( $team_old[0] != '' && !mysql_query ("
 		UPDATE `participants` SET `team` = '0'
 		WHERE `id` = '$team_old[0]' LIMIT 1 ;") ) {
 			mysql_query ("ROLLBACK;");
 			report_error ("Произошла ошибка изменения участника слета");
 			return FALSE;
 		}
-		if ( !mysql_query ("
+		if ( $team_old[1] != '' && !mysql_query ("
 		UPDATE `participants` SET `team` = '0'
 		WHERE `id` = '$team_old[1]' LIMIT 1 ;") ) {
 			mysql_query ("ROLLBACK;");
 			report_error ("Произошла ошибка изменения участника слета");
 			return FALSE;
 		}
-		if ( !mysql_query ("
+		if ( $team_old[2] != '' && !mysql_query ("
 		UPDATE `participants` SET `team` = '0'
 		WHERE `id` = '$team_old[2]' LIMIT 1 ;") ) {
 			mysql_query ("ROLLBACK;");
@@ -388,21 +390,21 @@ function saveTeam ( $id, $leader, $graduate, $teacher ) {
 		}
 	}
 
-	if ( !mysql_query ("
+	if ( $leader != '' && !mysql_query ("
 	UPDATE `participants` SET `team` = '$id'
 	WHERE `id` = '$leader' LIMIT 1 ;") ) {
 		mysql_query ("ROLLBACK;");
 		report_error ("Произошла ошибка изменения участника слета");
 		return FALSE;
 	}
-	if ( !mysql_query ("
+	if ( $graduate != ''  && !mysql_query ("
 	UPDATE `participants` SET `team` = '$id'
 	WHERE `id` = '$graduate' LIMIT 1 ;") ) {
 		mysql_query ("ROLLBACK;");
 		report_error ("Произошла ошибка изменения участника слета");
 		return FALSE;
 	}
-	if ( !mysql_query ("
+	if ( $teacher != ''  && !mysql_query ("
 	UPDATE `participants` SET `team` = '$id'
 	WHERE `id` = '$teacher' LIMIT 1 ;") ) {
 		mysql_query ("ROLLBACK;");
@@ -430,7 +432,7 @@ function saveTeam ( $id, $leader, $graduate, $teacher ) {
 	}
 	if ( !mysql_query ("
 	INSERT INTO `logs_admin` (`admin_id`, `id`, `action`, `ip`)
-	VALUES ('$user[userid]', $id, 'Созранение звена', '$_SERVER[REMOTE_ADDR]');") ) {
+	VALUES ('$user[userid]', $id, 'Сохранение звена', '$_SERVER[REMOTE_ADDR]');") ) {
 		mysql_query ("ROLLBACK;");
 		report_error ("Произошла ошибка записи в логи. Пользователь не был добавлен");
 		return FALSE;
