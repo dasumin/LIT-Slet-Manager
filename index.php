@@ -11,7 +11,7 @@ function print_header( $year ) {
 			<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 			<link type="text/css" rel="stylesheet" media="all" href="style/style.css">
 			<link type="text/css" rel="stylesheet" media="print" href="style/print.css">
-			
+
 			<script language="javascript" type="text/javascript">
 				function getHTTPObject(){
 					if (window.ActiveXObject) return new ActiveXObject("Microsoft.XMLHTTP");
@@ -28,9 +28,9 @@ function print_header( $year ) {
 
 		</head>
 		<body>
-		
+
 		<div id="header">&nbsp;</div>
-		<div id="indexlink"><a href="'.$_SERVER["PHP_SELF"].'">Слет&mdash;'.$year.'</a></div>';	
+		<div id="indexlink"><a href="'.$_SERVER["PHP_SELF"].'">Слет&mdash;'.$year.'</a></div>';
 	return TRUE;
 }
 
@@ -40,12 +40,12 @@ function print_footer() {
 		</body>
 	</html>
 	';
-	
+
 	return TRUE;
 }
 
 function menu ($curAction) {
-	global $modules, $user;	
+	global $modules, $user;
 	echo '<ul>';
 	foreach ($modules as $module=>$m) {
 		if ( ($module !== 'welcome') && check_user_access ($module, $user)) {
@@ -68,8 +68,8 @@ function menu ($curAction) {
 }
 
 function title ($curAction) {
-	global $modules, $user;	
-	
+	global $modules, $user;
+
 	foreach ($modules as $module=>$m) {
 		foreach ($modules[$module]['action'] as $key=>$action) {
 			if ($action == $curAction) {
@@ -97,7 +97,7 @@ function find_module ($action) {
 function exec_module ($module) {
 	global $action, $user;
 	if ($module === FALSE) return FALSE;
-	
+
 	if (! check_user_access ($module, $user) ) {
 		show_auth ($action);
 		report_error ("У Вас нет права использования этого модуля");
@@ -130,12 +130,12 @@ $participantlist = FALSE;
 
 print_header( $year );
 
-if (!mysql_connect($mysql_server,$mysql_user,$mysql_password)) 
+if (!mysql_connect($mysql_server,$mysql_user,$mysql_password))
 	report_error ('Не удалось подключиться к серверу баз данных.');
-	
-if (!mysql_select_db($mysql_db)) 
+
+if (!mysql_select_db($mysql_db))
 	report_error ('Не удалось подключиться к базе данных.');
-	
+
 if (empty($_GET['action'])) $action = 'welcome';
 	else $action = $_GET['action'];
 
@@ -160,11 +160,11 @@ foreach ($files as $file) {
 	include ($modpath.$file);
 }
 
-	
+
 echo '<div id="menu">';
 menu ($action);
 echo '</div>';
-	
+
 echo '<div id="main">';
 if ( ( $title=title ($action) ) != '' ) echo '
 <script language="javascript" type="text/javascript">document.title = document.title+\': '.$title.'\';</script>
