@@ -94,8 +94,7 @@ function show_teams ($action) {
         ';
 
         foreach ( $litgroupSet as $key=>$value ) {
-          if ( $value !== 'Выпускник' && $value !== 'Преподаватель') {}
-          else {
+          if ( $value === 'Выпускник') {
             echo '<optgroup label="'.$value.'">';
             foreach ( formParticipantArray('surname', 'ASC', '', $value)  as $key1=>$value1) {
               //if ($value == @$litgroup) $atr = 'selected';
@@ -114,8 +113,7 @@ function show_teams ($action) {
         ';
 
         foreach ( $litgroupSet as $key=>$value ) {
-          if ( $value !== 'Выпускник' && $value !== 'Преподаватель') {}
-          else {
+          if ( $value === 'Преподаватель') {
             echo '<optgroup label="'.$value.'">';
             foreach ( formParticipantArray('surname', 'ASC', '', $value)  as $key1=>$value1) {
               //if ($value == @$litgroup) $atr = 'selected';
@@ -453,8 +451,7 @@ function show_teams ($action) {
       ';
 
       foreach ( $litgroupSet as $key=>$value ) {
-        if ( $value !== 'Выпускник' && $value !== 'Преподаватель') {}
-        else {
+        if ( $value === 'Выпускник') {
           echo '<optgroup label="'.$value.'">';
           foreach ( formParticipantArray('surname', 'ASC', '', $value)  as $key1=>$value1) {
             if ($value1['id'] == @$teams[1]) $atr = 'selected';
@@ -473,8 +470,7 @@ function show_teams ($action) {
       ';
 
       foreach ( $litgroupSet as $key=>$value ) {
-        if ( $value !== 'Выпускник' && $value !== 'Преподаватель') {}
-        else {
+        if ( $value === 'Преподаватель') {
           echo '<optgroup label="'.$value.'">';
           foreach ( formParticipantArray('surname', 'ASC', '', $value)  as $key1=>$value1) {
             if ($value1['id'] == @$teams[2]) $atr = 'selected';
