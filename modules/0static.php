@@ -185,7 +185,7 @@ function show_static ($action) {
 <p>Актуальные списки звеньев доступны по&nbsp;адресам:</p>
 <ul>
   <li>По звеньям: <a href="http://slet.lit1533.ru/teams/">http://slet.lit1533.ru/teams/</a></li>
-  <li>По учебным группам: <a href="http://slet.lit1533.ru/teams/">http://slet.lit1533.ru/groups/</a></li>
+  <li>По учебным группам: <a href="http://slet.lit1533.ru/groups/">http://slet.lit1533.ru/groups/</a></li>
 </ul>
 <p>Человек является записанным в&nbsp;звено, когда он&nbsp;появляется в&nbsp;списке, указанном выше.<br />
 Управление списками осуществляется через специальный интерфейс. Администратор системы: Денис Сумин.<br />
