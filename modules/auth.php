@@ -87,7 +87,7 @@ function show_auth ($action) {
 				</table>
 				</form>
 				<p style="margin-top: 40px;">База пользователей Слётоуправлятора, к сожалению, пока никак не связана с лицейскими логинами; логины прошлого года так же не работают.</p>
-				<p>Чтобы получить логин и пароль, обратитесь к Дмитрию Николаевичу Алхазашвили или Денису Сумину (<a href="mailto:slet@dsumin.ru">slet@dsumin.ru</a>)</p>
+				<p>Чтобы получить логин и пароль, обратитесь к Денису Сумину (<a href="mailto:denis@lit.msu.ru">denis@lit.msu.ru</a>)</p>
 			';
 			break;
 		case $module['action'][1]:

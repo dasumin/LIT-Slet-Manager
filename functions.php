@@ -114,7 +114,7 @@ function print_errors() {
 		}
 		echo '</ul>
 		<p><a href="javascript:history.back()"><i>Назад</i></a></p>
-		<p>Обо всех ошибках работы системы сообщайте, пожалуйста, Денису Сумину (<a href="mailto:denis@304.ru">denis@304.ru</a>)</p>
+		<p>Обо всех ошибках работы системы сообщайте, пожалуйста, Денису Сумину (<a href="mailto:denis@lit.msu.ru">denis@lit.msu.ru</a>)</p>
 		</div>';
 		@print_footer();
 		die();
