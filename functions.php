@@ -274,11 +274,12 @@ function formParticipantArray ( $sortField, $sortDir ) {
 	$arg = func_get_args();
 	$array = array();
 
+	$litgroup_filter = (@$arg['3']!=='') ? "`litgroup` LIKE '$arg[3]%'" : "`litgroup` != 'Выпускник'";
 	if (@$arg['4']=='1') $blacklist = 'AND `blacklist` = \'1\''; else $blacklist = '';
 
 	$q = mysql_query("
 		SELECT * FROM `participants`
-		WHERE  `surname` LIKE '$arg[2]%' AND `litgroup` LIKE '$arg[3]%' $blacklist
+		WHERE  `surname` LIKE '$arg[2]%' AND $litgroup_filter $blacklist
 		ORDER BY `$sortField` $sortDir;
 	");
 

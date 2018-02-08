@@ -29,8 +29,10 @@ function show_participantlists ( $action ) {
 		case $module['action'][0]: // Посмотреть список участников слета
 
 			if ( RequestModule == 'core' && check_user_access ('participantlists', $user) )  {
-				$field = array ( 'surname'=>'Фамилия', 'name'=>'Имя', 'litgroup'=>'Группа', 'team'=>'Звено' ); }
-			else $field = array ( 'surname'=>'Фамилия', 'name'=>'Имя', 'litgroup'=>'' );
+				$field = array ( 'surname'=>'Фамилия', 'name'=>'Имя', 'litgroup'=>'Группа', 'team'=>'Звено' );
+			} else {
+				$field = array ( 'surname'=>'Фамилия', 'name'=>'Имя', 'litgroup'=>'' );
+			}
 
 			if ( empty ($_GET['sortField']) ) $sortField = 'surname'; else $sortField = $_GET['sortField'];
 			if ( empty ($_GET['sortDir']) ) $sortDir = 'ASC'; else $sortDir = $_GET['sortDir'];
@@ -73,11 +75,15 @@ function show_participantlists ( $action ) {
 			Группа:<br />';
 
 			for ($i=0; $i<count($group); $i++) {
-			echo '
+				echo '
 				<a href="'.$_SERVER["PHP_SELF"].'?action='.$action.'&sortField='.$sortField.'
 				&sortDir='.$sortDir.'&filterSurname='.$filterSurname.'&filterGroup='.$group[$i].'">'.$group[$i].'</a> ';
 
-			if ( !empty ($group[$i+1]) && ( ( $group[$i][0] != '1' && $group[$i][0] != $group[$i+1][0] ) || ( $group[$i][1] != $group[$i+1][1] ) ) ) echo '<br />';
+				if ($group[$i] == 'Выпускник') {
+					echo ' (скрыто, если не выбрать явно)';
+				}
+
+				if ( !empty ($group[$i+1]) && ( ( $group[$i][0] != '1' && $group[$i][0] != $group[$i+1][0] ) || ( $group[$i][1] != $group[$i+1][1] ) ) ) echo '<br />';
 			}
 
 			echo '
