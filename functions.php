@@ -232,6 +232,8 @@ function formTeamsArray () {
 		}
 		$array[$f['id']]['num_people'] = mysql_num_rows( mysql_query ( "SELECT * FROM `participants` WHERE `team`='$f[id]';" ) );
 		$array[$f['id']]['num_students'] = mysql_num_rows( mysql_query ( "SELECT * FROM `participants` WHERE `team`='$f[id]' AND `litgroup` != 'Преподаватель' AND `litgroup` != 'Выпускник' AND `litgroup` != 'Внешний человек';" ) );
+		$array[$f['id']]['num_3'] = mysql_num_rows( mysql_query ( "SELECT * FROM `participants` WHERE `team`='$f[id]' AND `litgroup` LIKE '3%';" ) );
+		$array[$f['id']]['num_4'] = mysql_num_rows( mysql_query ( "SELECT * FROM `participants` WHERE `team`='$f[id]' AND `litgroup` LIKE '4%';" ) );
 		$array[$f['id']]['num_5'] = mysql_num_rows( mysql_query ( "SELECT * FROM `participants` WHERE `team`='$f[id]' AND `litgroup` LIKE '5%';" ) );
 		$array[$f['id']]['num_6'] = mysql_num_rows( mysql_query ( "SELECT * FROM `participants` WHERE `team`='$f[id]' AND `litgroup` LIKE '6%';" ) );
 		$array[$f['id']]['num_7'] = mysql_num_rows( mysql_query ( "SELECT * FROM `participants` WHERE `team`='$f[id]' AND `litgroup` LIKE '7%';" ) );
