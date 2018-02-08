@@ -34,8 +34,8 @@ foreach ($tables as $value) {
 					$participant['litgroup'] = 'Выпускник';
 					break;
 				case 'students':
-					$participant['litgroup'] = $participant['grade'].'.'.$participant['group'];
-					if ($participant['group']==0) $participant['litgroup']='';
+					$participant['litgroup'] = $participant['grade'].'.'.$participant['study_group'];
+					if ($participant['study_group']==0) $participant['litgroup']='';
 					break;
 			}
 
