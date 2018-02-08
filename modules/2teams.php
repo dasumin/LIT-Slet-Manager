@@ -427,7 +427,7 @@ function show_teams ($action) {
         <table class="userinfo">
           <tr>
           <td>Звеньевой</td>
-          <td><select name="leader" size="1">
+          <td><select name="leader" size="1"><option value="">нет</option>
       ';
 
       foreach ( $litgroupSet as $key=>$value ) {
