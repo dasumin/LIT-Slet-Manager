@@ -5,10 +5,10 @@ session_start();
 include ("../config.php");
 include ("../functions.php");
 
-if (!mysql_connect($mysql_server,$mysql_user,$mysql_password)) 
+if (!mysql_connect($mysql_server,$mysql_user,$mysql_password))
 	report_error ('Не удалось подключиться к серверу баз данных.');
-	
-if (!mysql_select_db($mysql_db)) 
+
+if (!mysql_select_db($mysql_db))
 	report_error ('Не удалось подключиться к базе данных.');
 
 // Загружаем данные о пользователе
@@ -18,7 +18,7 @@ else $user['group'][] = 'guest';
 $userIsAdmin = FALSE;
 $userIsLeader= FALSE;
 foreach (@$user['group'] as $key=>$value) {
-	if ($value=='admin') $userIsAdmin = TRUE;
+	if ($value=='admin' or $value=='organizer') $userIsAdmin = TRUE;
 	if ($value=='leader') $userIsLeader = TRUE;
 }
 
@@ -35,9 +35,9 @@ if ($userIsAdmin || $userIsLeader) {
 		if ( isset ($_GET['add'] ) || isset ($_GET['add_confirmed'] )) {
 			if ( isset ($_GET['add'] ) ) $participant = get_participant_info ( $_GET['add'] );
 				else $participant = get_participant_info ( $_GET['add_confirmed'] );
-			
+
 			if (!$userIsAdmin && $participant['team']!=0 && $participant['team']!=$_GET['team']) report_error ("Вы не можете добавить участника в свое звено, так как он уже находится в другом звене.");
-			elseif ($userIsAdmin && $participant['team']!=0 && $participant['team']!=$_GET['team'] && !isset($_GET['add_confirmed'])) {	
+			elseif ($userIsAdmin && $participant['team']!=0 && $participant['team']!=$_GET['team'] && !isset($_GET['add_confirmed'])) {
 				echo '
 				Этот участник уже состоит в '.$participant['team'].' звене.<br />Вы уверены, что хотите перенести его в '.$_GET['team'].' звено?<br />
 				<input type="button" value="Да" onclick="TeamManage (\''.$participant['id'].'\', \'add_confirmed\')" /> <input type="button" value="Нет" onclick="TeamManage (\''.$participant['id'].'\', \'nothing\')" /> <br />
@@ -52,9 +52,9 @@ if ($userIsAdmin || $userIsLeader) {
 			$participant = get_participant_info ( $_GET['delete'] );
 			$participant['team'] = '0';
 			editParticipant ( $participant );
-			
+
 		}
-		
+
 	}
 	show_teams ( $action );
 }
