@@ -21,8 +21,9 @@ if ($action === "login" &&
 }
 
 if ($action === "logout") {
-	unset($_SESSION['userid']);
-	session_unregister('userid');
+	if( isset($_SESSION['userid']) ) {
+		unset($_SESSION['userid']);
+	}
 }
 
 //$modules[$module]['name'] = 'Авторизация';
@@ -106,8 +107,9 @@ function show_auth ($action) {
 
 			if ( !empty ($_SESSION['password_reset']) ) {
 
-				unset($_SESSION['password_reset']);
-				session_unregister('password_reset');
+				if( isset($_SESSION['password_reset']) ) {
+					unset($_SESSION['password_reset']);
+				}
 
 				if (isset($_POST['password']) && isset($_POST['password_check'])) {
 					if ($_POST['password'] === $_POST['password_check']) {
